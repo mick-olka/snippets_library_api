@@ -1,0 +1,9 @@
+/index:
+  get:
+    description: Get Main page
+    tags: [pages]
+    responses:
+      200:
+        description: Page rendered
+      500:
+        description: Error
