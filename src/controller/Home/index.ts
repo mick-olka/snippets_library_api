@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+
 import * as homeService from '@/service/home'
 import { catchAsync } from '@/utils/catchAsync'
 

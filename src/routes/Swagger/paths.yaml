@@ -1,0 +1,30 @@
+/:
+  get:
+    description: Get App Data
+    tags: [home]
+    responses:
+      200:
+        description: Data received
+        content:
+          application/json:
+            schema: # Must-have
+              type: object # Data type
+              properties:
+                NAME:
+                  type: string
+                VERSION:
+                  type: string
+                DESCRIPTION:
+                  type: string
+                AUTHORS:
+                  type: string
+                PORT:
+                  type: number
+              example: # Sample data
+                NAME: 'ts-node-express-hbs-starter'
+                VERSION: '1.1.0'
+                DESCRIPTION: 'Typescript Node Express Rest API server starter'
+                AUTHORS: 'mick-olka!'
+                PORT: 8080
+      500:
+        description: Error

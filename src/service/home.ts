@@ -1,4 +1,4 @@
-import AppInformation from '@/types/response/AppInformation'
+import AppInformation from '@/types/Response/AppInformation'
 import CONFIG from '@/config'
 
 /**

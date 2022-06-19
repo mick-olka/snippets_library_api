@@ -10,8 +10,10 @@ import sassMiddleware from 'node-sass-middleware'
 import path from 'path'
 import process from 'process'
 
-import * as errorHandler from '@/middlewares/errorHandler'
-import routes from '@/routes'
+import { usersRouter } from './routes/User/index'
+
+import * as errorHandler from '@/middlewares/ErrorHandler'
+import home from '@/routes/Home'
 import { initSwagger } from '@/swagger'
 
 const whitelist = ['localhost:8080', '192.168.0.103:8080']
@@ -51,7 +53,8 @@ export const createApp = (): express.Application => {
   //  expects request data to be sent encoded in the URL, usually in strings or arrays
   app.use(urlencoded({ extended: true }))
   // API Routes
-  app.use('/', routes)
+  app.use('/', home)
+  app.use('/users', usersRouter)
   initSwagger(app)
   // Error Middleware
   app.use(errorHandler.genericErrorHandler)

@@ -1,8 +1,8 @@
-import * as errors from '@/utils/error'
-
 import { Request, Response } from 'express'
 
 import HttpStatus from 'http-status'
+
+import * as errors from '@/utils/error'
 
 /**
  * Error response middleware for 404 not found.
