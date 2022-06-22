@@ -1,5 +1,5 @@
-import AppInformation from '@/types/Response/AppInformation'
 import CONFIG from '@/config'
+import AppInformation from '@/types/Response/AppInformation'
 
 /**
  * Get application information.

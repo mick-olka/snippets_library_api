@@ -21,43 +21,40 @@ const options: cors.CorsOptions = {
   origin: whitelist,
 }
 
-export const createApp = (): express.Application => {
-  const app = express()
-  config() //  .env activation
-  //  DB connect
-  if (process.env.DBURL) {
-    mongoose.connect(process.env.DBURL, {}, (err) => {
-      if (err) console.log(err)
-      else console.log('connected')
-    })
-  } else console.log('Add DBURL to .env !')
-  // view engine setup
-  app.set('views', path.join(__dirname, '../views'))
-  app.set('view engine', 'hbs')
-  // other
-  app.use(cookieParser())
-  app.use(
-    sassMiddleware({
-      src: path.join(__dirname, '../public'),
-      dest: path.join(__dirname, '../public'),
-      indentedSyntax: false, // true = .sass and false = .scss
-      sourceMap: true,
-    }),
-  )
-  app.use(express_static(path.join(__dirname, '../public')))
-  app.use(cors(options))
-  app.use(helmet())
-  app.use(morgan('dev')) //  logging
-  //  expects request data to be sent in JSON format, which often resembles a simple JS object
-  app.use(json())
-  //  expects request data to be sent encoded in the URL, usually in strings or arrays
-  app.use(urlencoded({ extended: true }))
-  // API Routes
-  app.use('/', home)
-  app.use('/users', usersRouter)
-  initSwagger(app)
-  // Error Middleware
-  app.use(errorHandler.genericErrorHandler)
-  app.use(errorHandler.notFoundError)
-  return app
-}
+export const app = express()
+config() //  .env activation
+//  DB connect
+if (process.env.DBURL) {
+  mongoose.connect(process.env.DBURL, {}, (err) => {
+    if (err) console.log(err)
+    else console.log('connected')
+  })
+} else console.log('Add DBURL to .env !')
+// view engine setup
+app.set('views', path.join(__dirname, '../views'))
+app.set('view engine', 'hbs')
+// other
+app.use(cookieParser())
+app.use(
+  sassMiddleware({
+    src: path.join(__dirname, '../public'),
+    dest: path.join(__dirname, '../public'),
+    indentedSyntax: false, // true = .sass and false = .scss
+    sourceMap: true,
+  }),
+)
+app.use(express_static(path.join(__dirname, '../public')))
+app.use(cors(options))
+app.use(helmet())
+app.use(morgan('dev')) //  logging
+//  expects request data to be sent in JSON format, which often resembles a simple JS object
+app.use(json())
+//  expects request data to be sent encoded in the URL, usually in strings or arrays
+app.use(urlencoded({ extended: true }))
+// API Routes
+app.use('/', home)
+app.use('/users', usersRouter)
+initSwagger(app)
+// Error Middleware
+app.use(errorHandler.genericErrorHandler)
+app.use(errorHandler.notFoundError)

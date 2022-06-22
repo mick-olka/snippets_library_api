@@ -1,8 +1,6 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 import HttpStatus from 'http-status'
-
-import * as errors from '@/utils/error'
 
 /**
  * Error response middleware for 404 not found.
@@ -11,13 +9,11 @@ import * as errors from '@/utils/error'
  * @param  {object}   req
  * @param  {object}   res
  */
-export const notFoundError = (req: Request, res: Response) => {
+export const notFoundError = (req: Request, res: Response, next: NextFunction) => {
   const NOT_FOUND_CODE = HttpStatus.NOT_FOUND
   res.status(NOT_FOUND_CODE).json({
-    error: {
-      code: NOT_FOUND_CODE,
-      message: HttpStatus[NOT_FOUND_CODE],
-    },
+    code: NOT_FOUND_CODE,
+    message: HttpStatus[NOT_FOUND_CODE],
   })
 }
 
@@ -29,11 +25,14 @@ export const notFoundError = (req: Request, res: Response) => {
  * @param {Request} req
  * @param {Response} res
  */
-export const genericErrorHandler = (err: any, req: Request, res: Response) => {
-  if (err.stack) {
-    process.stdout.write('Error stack trace: ', err.stack)
+export const genericErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+  const dev = req.app.get('env') === 'dev'
+  if (err.stack && dev) {
+    console.log('Error stack trace: ', err.stack)
   }
-
-  const error = errors.buildError(err)
-  res.status(error.code).json({ error })
+  // render the error page
+  res.status(err.status || 500).json({
+    code: err.status || 500,
+    message: err.status ? err.message : dev ? 'SERVER_ERROR: ' + err.message : 'Server Error ;(',
+  })
 }

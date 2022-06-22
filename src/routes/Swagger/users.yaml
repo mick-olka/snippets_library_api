@@ -23,8 +23,9 @@
               hash: bfy4r38tghbuie7493hfrg
       '500': # status code
         description: Some Error
+/users/register:
   post:
-    description: Create user
+    description: Register user
     tags: [users]
     requestBody:
       required: true
@@ -36,7 +37,33 @@
               email: 'mick@f.com'
               hash: '627e50218a3c1e8f041526d8'
     responses:
-      200:
-        description: All info about api successfully sended
-      500:
+      '200':
+        description: Success - validation email sent
+        content:
+          application/json:
+            example:
+              name: Mick
+              email: mick@gmail.com
+              hash: bfy4r38tghbuie7493hfrg
+      '500':
         description: Some error
+/users/confirm/{hash}:
+  get:
+    summary: Creates user after confirm
+    tags: [users]
+    description: Confirm user via link from email
+    parameters:
+      - name: 'hash'
+        in: 'path'
+        description: 'Confirmation hash'
+        required: true
+        type: 'string'
+    responses:
+      '200':
+        description: A JSON session token
+        content:
+          application/json:
+            example:
+              token: 'session-token-325432546257843'
+      '500':
+        description: Some Error

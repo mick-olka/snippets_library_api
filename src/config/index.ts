@@ -1,6 +1,8 @@
+import dotenv from 'dotenv'
+
 import pkg from '../../package.json'
 
-require('dotenv').config()
+dotenv.config()
 
 const CONFIG = {
   APP: {
@@ -8,7 +10,7 @@ const CONFIG = {
     VERSION: pkg.version,
     DESCRIPTION: pkg.description,
     AUTHORS: pkg.authors,
-    HOST: process.env.APP_HOST,
+    HOST: process.env.APP_HOST || '127.0.0.1',
     BASE_URL: process.env.API_BASE_URL,
     PORT: process.env.NODE_ENV === 'test' ? 8888 : process.env.PORT || 8080,
     ENV: process.env.NODE_ENV,
