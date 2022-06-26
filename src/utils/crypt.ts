@@ -10,7 +10,6 @@ import CONFIG from '@/config'
  */
 export const hash = async (value: string): Promise<any> => {
   const saltRounds = parseInt(CONFIG.AUTH.SALT_ROUNDS, 10)
-
   return bcrypt.hash(value, saltRounds)
 }
 

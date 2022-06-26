@@ -32,7 +32,7 @@ export const genericErrorHandler = (err: any, req: Request, res: Response, next:
   }
   // render the error page
   res.status(err.status || 500).json({
-    code: err.status || 500,
+    type: 'error',
     message: err.status ? err.message : dev ? 'SERVER_ERROR: ' + err.message : 'Server Error ;(',
   })
 }

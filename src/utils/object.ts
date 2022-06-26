@@ -50,6 +50,7 @@ export const withOnlyAttrs = (obj: any, attrs: any[]) => {
 export const difference = (list1: any[], list2: any[], key = 'id') => {
   return {
     create: list2
+      // eslint-disable-next-line no-prototype-builtins
       .filter((obj) => obj.hasOwnProperty(key) && obj[key] === null)
       .map((obj) => withoutAttrs(obj, [key])),
     update: intersectionBy(list2, list1, key),

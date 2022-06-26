@@ -33,6 +33,8 @@ if (process.env.DBURL) {
 // view engine setup
 app.set('views', path.join(__dirname, '../views'))
 app.set('view engine', 'hbs')
+app.set('env', process.env.NODE_ENV)
+app.set('jwtTokenSecret', process.env.JWT_SECRET)
 // other
 app.use(cookieParser())
 app.use(

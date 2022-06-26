@@ -1,32 +1,38 @@
 /users:
   get:
     summary: Returns a list of users.
-    tags: [users]
+    tags: [user]
     description: Get all users
     responses:
-      '200': # status code
+      '200':
         description: A JSON array of users
         content:
           application/json:
             schema:
-              type: array
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                hash:
-                  type: string
+              allOf: # Combines the ApiResponse and the inline model
+                - $ref: '#/components/schemas/ApiResponse'
+                - type: object
+                  properties:
+                    payload:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/User'
             example:
-              name: Mick
-              email: mick@gmail.com
-              hash: bfy4r38tghbuie7493hfrg
-      '500': # status code
-        description: Some Error
+              type: 'success'
+              message: 'Users received'
+              payload: [{ _id: f847js, name: mick, email: mick@example.com }]
+      '500':
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
 /users/register:
   post:
     description: Register user
-    tags: [users]
+    tags: [user]
     requestBody:
       required: true
       content:
@@ -35,22 +41,70 @@
             example:
               name: 'mick'
               email: 'mick@f.com'
-              hash: '627e50218a3c1e8f041526d8'
+              pass: '1234'
     responses:
       '200':
         description: Success - validation email sent
         content:
           application/json:
             example:
-              name: Mick
-              email: mick@gmail.com
-              hash: bfy4r38tghbuie7493hfrg
+              message: 'Confirm user via email'
+              type: 'success'
+      '409':
+        description: Warning occurred
+        content:
+          application/json:
+            example:
+              message: 'User with such name or email already exists'
+              type: 'warning'
       '500':
         description: Some error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+/users/login:
+  post:
+    description: Login user
+    tags: [user]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            example:
+              login: 'mick'
+              pass: '1234'
+    responses:
+      '200':
+        description: Success - user logged in - token received
+        content:
+          application/json:
+            example:
+              payload:
+                {
+                  token: Bearer fjhu98gh7uh9iu9ryhf79g8ru9hu4g79ey8uhg,
+                  expires: Sun Jun 26 2022 11:36:22 GMT+0300,
+                }
+              message: user confirmed
+              type: success
+      '404':
+        description: User not found
+        content:
+          application/json:
+            example:
+              message: 'No user with such credentials'
+              type: 'warning'
+      '500':
+        description: Some error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
 /users/confirm/{hash}:
   get:
     summary: Creates user after confirm
-    tags: [users]
+    tags: [user]
     description: Confirm user via link from email
     parameters:
       - name: 'hash'
@@ -64,6 +118,25 @@
         content:
           application/json:
             example:
-              token: 'session-token-325432546257843'
+              payload:
+                {
+                  token: Bearer fjhu98gh7uh9iu9ryhf79g8ru9hu4g79ey8uhg,
+                  expires: Sun Jun 26 2022 11:36:22 GMT+0300,
+                }
+              message: user confirmed
+              type: success
+      '404':
+        description: User not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              message: 'No such user in potential'
+              type: 'error'
       '500':
         description: Some Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'

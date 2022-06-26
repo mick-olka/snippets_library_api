@@ -8,6 +8,6 @@ router.get('/', homeController.getAppInfo)
 
 router.get('/index', homeController.getMainPage)
 
-router.get('/mail', homeController.sendMail)
+//router.get('/mail', homeController.sendMail)
 
 export default router
