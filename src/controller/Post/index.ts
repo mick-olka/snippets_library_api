@@ -7,6 +7,7 @@ import { Request, Response } from 'express'
 // import { randomBytes } from 'crypto'
 
 import { Post } from '@/models/Post'
+import { RequestExtended } from '@/types/interfaces'
 // import { RequestExtended, UserI } from '@/types/interfaces'
 // import * as crypt from '@/utils/crypt'
 // import { sendMail } from '@/utils/sendMail'
@@ -20,12 +21,16 @@ import { Post } from '@/models/Post'
 
 // let potentialUsers: PotentialUser[] = []
 
-// export const createPost = async (req: Request, res: Response) => {
-//   if (!req.body) throw new Error('Body is empty')
-//   const userData: { name: string; email: string; hash: string } = req.body
-//   const result = await User.create(userData)
-//   res.status(200).json({ message: 'User created', type: 'success', payload: result })
-// }
+export const createPost = async (req: RequestExtended, res: Response) => {
+  if (!req.body) throw new Error('Body is empty')
+  if (!req.user) throw new Error('Need to login')
+  const postData = req.body
+  if (!postData.title)
+    return res.status(402).json({ type: 'warning', message: 'Please provide a title' })
+  postData.author = req.user.id
+  const result = await Post.create(postData)
+  res.status(200).json({ message: 'Post created', type: 'success', payload: result })
+}
 
 export const getPosts = async (req: Request, res: Response) => {
   const posts = await Post.find()

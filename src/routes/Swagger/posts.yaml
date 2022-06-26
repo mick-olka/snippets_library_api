@@ -20,3 +20,39 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
+/posts/:
+  post:
+    description: Create post
+    tags: [post]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            example:
+              title: 'how to install node'
+              subtitle: 'for linux users'
+              text: 'open terminal and print ```sudo npm install nodejs```  '
+    responses:
+      '200':
+        description: Success - post was created
+        content:
+          application/json:
+            example:
+              message: 'Post was created'
+              type: 'success'
+      '409':
+        description: Warning occurred
+        content:
+          application/json:
+            example:
+              message: 'Please provide a title'
+              type: 'warning'
+      '500':
+        description: Some error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
