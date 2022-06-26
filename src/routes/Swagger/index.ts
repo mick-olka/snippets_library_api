@@ -2,14 +2,12 @@ import YAML from 'yamljs'
 
 import path from 'path'
 
-// eslint-disable-next-line import/no-named-as-default-member
 const all = YAML.load(path.resolve(__dirname, './paths.yaml'))
-// eslint-disable-next-line import/no-named-as-default-member
 const index = YAML.load(path.resolve(__dirname, './index.yaml'))
-// eslint-disable-next-line import/no-named-as-default-member
 const users = YAML.load(path.resolve(__dirname, './users.yaml'))
+const posts = YAML.load(path.resolve(__dirname, './posts.yaml'))
 
-export const paths = Object.assign(all, index, users)
+export const paths = Object.assign(all, index, users, posts)
 
 export const definition = {
   openapi: '3.0.0',
@@ -36,25 +34,23 @@ export const definition = {
       User: {
         type: 'object',
         properties: {
-          _id: {
-            type: 'string',
-          },
-          name: {
-            type: 'string',
-          },
-          email: {
-            type: 'string',
-          },
-          pass: {
-            type: 'string',
-          },
+          _id: { type: 'string' },
+          name: { type: 'string' },
+          email: { type: 'string' },
+          pass: { type: 'string' },
         },
-        example: {
-          name: 'fgfd',
+        xml: { name: 'User' },
+      },
+      Post: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string' },
+          author: { type: 'string' },
+          title: { type: 'string' },
+          subtitle: { type: 'string' },
+          text: { type: 'string' },
         },
-        xml: {
-          name: 'User',
-        },
+        xml: { name: 'Post' },
       },
       ApiResponse: {
         type: 'object',
@@ -74,44 +70,6 @@ export const definition = {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-      },
-    },
-  },
-  securityDefinitions: {
-    petstore_auth: {
-      type: 'oauth2',
-      authorizationUrl: 'http://petstore.swagger.io/oauth/dialog',
-      flow: 'implicit',
-      scopes: {
-        'write:pets': 'modify pets in your account',
-        'read:pets': 'read your pets',
-      },
-    },
-    api_key: {
-      type: 'apiKey',
-      name: 'api_key',
-      in: 'header',
-    },
-  },
-  definitions: {
-    User: {
-      type: 'object',
-      properties: {
-        _id: {
-          type: 'string',
-        },
-        name: {
-          type: 'string',
-        },
-        email: {
-          type: 'string',
-        },
-        pass: {
-          type: 'string',
-        },
-      },
-      xml: {
-        name: 'User',
       },
     },
   },

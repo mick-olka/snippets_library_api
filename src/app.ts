@@ -10,6 +10,7 @@ import sassMiddleware from 'node-sass-middleware'
 import path from 'path'
 import process from 'process'
 
+import { postsRouter } from './routes/Post/index'
 import { usersRouter } from './routes/User/index'
 
 import * as errorHandler from '@/middlewares/ErrorHandler'
@@ -56,6 +57,7 @@ app.use(urlencoded({ extended: true }))
 // API Routes
 app.use('/', home)
 app.use('/users', usersRouter)
+app.use('/posts', postsRouter)
 initSwagger(app)
 // Error Middleware
 app.use(errorHandler.genericErrorHandler)

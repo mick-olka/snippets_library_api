@@ -1,0 +1,22 @@
+/posts:
+  get:
+    summary: Returns a list of posts.
+    tags: [post]
+    description: Get all posts
+    responses:
+      '200':
+        description: A JSON array of posts
+        content:
+          application/json:
+            example:
+              type: 'success'
+              message: 'Posts received'
+              payload: [{ _id: f847js, title: post, subtitle: post about node, author: mick }]
+      '500':
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
