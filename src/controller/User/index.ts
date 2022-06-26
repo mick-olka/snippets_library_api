@@ -28,7 +28,7 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 export const getUsers = async (req: Request, res: Response) => {
-  const users = await User.find()
+  const users = await User.find().select('name email')
   res.status(200).json({ message: 'Users received', type: 'success', payload: users })
 }
 
