@@ -10,6 +10,8 @@ export const usersRouter = Router()
 
 usersRouter.get('/', authorize, catchAsync(userController.getUsers))
 
+usersRouter.patch('/update', authorize, catchAsync(userController.updateUser))
+
 usersRouter.post('/register', catchAsync(userController.register))
 
 usersRouter.post('/login', catchAsync(userController.login))

@@ -4,7 +4,7 @@ import swaggerUI, { SwaggerOptions } from 'swagger-ui-express'
 
 import path from 'path'
 
-import { definition, paths } from '@/routes/Swagger'
+import { definition } from '@/routes/Swagger'
 
 export const initSwagger = (app: Application) => {
   const options = {

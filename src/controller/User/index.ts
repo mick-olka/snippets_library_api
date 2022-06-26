@@ -1,13 +1,13 @@
 import { Request, Response } from 'express'
 
-import jwt from 'jsonwebtoken'
+import { sign } from 'jsonwebtoken'
 
 import moment from 'moment'
 
 import { randomBytes } from 'crypto'
 
 import { User } from '@/models/User'
-import { UserI } from '@/types/interfaces'
+import { RequestExtended, UserI } from '@/types/interfaces'
 import * as crypt from '@/utils/crypt'
 import { sendMail } from '@/utils/sendMail'
 
@@ -30,6 +30,15 @@ export const createUser = async (req: Request, res: Response) => {
 export const getUsers = async (req: Request, res: Response) => {
   const users = await User.find()
   res.status(200).json({ message: 'Users received', type: 'success', payload: users })
+}
+
+export const updateUser = async (req: RequestExtended, res: Response) => {
+  if (!req.body) throw new Error('Body is empty')
+  if (!req.user) throw new Error('User is not verified')
+  if (req.body.email) throw Error("Can't update email")
+  if (req.body.pass) req.body.pass = await crypt.hash(req.body.pass)
+  const result = await User.findByIdAndUpdate(req.user.id, req.body, { new: true })
+  res.status(200).json({ message: 'User updated', type: 'success', payload: result })
 }
 
 export const register = async (req: Request, res: Response) => {
@@ -73,7 +82,7 @@ export const login = async (req: Request, res: Response) => {
   if (!success)
     return res.status(401).json({ message: 'Credentials: invalid login or pass', type: 'error' })
   const expires = moment().add(2, 'days').valueOf()
-  const token = jwt.sign(
+  const token = sign(
     {
       id: user._id,
       exp: expires,
@@ -96,7 +105,7 @@ export const confirmEmail = async (req: Request, res: Response) => {
     userData.pass = await crypt.hash(userData.pass)
     const user = await User.create(userData)
     const expires = moment().add(2, 'days').valueOf()
-    const token = jwt.sign(
+    const token = sign(
       {
         id: user._id,
         exp: expires,

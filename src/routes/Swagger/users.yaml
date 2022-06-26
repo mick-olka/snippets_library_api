@@ -29,6 +29,36 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
+/users/update/:
+  patch:
+    summary: update user if logged in
+    tags: [user]
+    description: Update user (can't update email!!!)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            example:
+              name: 'newName'
+              pass: 'new1234'
+    responses:
+      '200':
+        description: Result
+        content:
+          application/json:
+            example:
+              payload: userData
+              message: user confirmed
+              type: success
+      '500':
+        description: Some Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
 /users/register:
   post:
     description: Register user
