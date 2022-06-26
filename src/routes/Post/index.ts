@@ -12,7 +12,9 @@ postsRouter.get('/', authorize, catchAsync(postController.getPosts))
 
 postsRouter.post('/', authorize, catchAsync(postController.createPost))
 
-// postsRouter.patch('/update', authorize, catchAsync(userController.updateUser))
+postsRouter.patch('/update/:id', authorize, catchAsync(postController.updatePost))
+
+postsRouter.delete('/delete/:id', authorize, catchAsync(postController.deletePost))
 
 // postsRouter.post('/register', catchAsync(userController.register))
 

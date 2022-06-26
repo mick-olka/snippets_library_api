@@ -7,7 +7,7 @@ import moment from 'moment'
 import { randomBytes } from 'crypto'
 
 import { User } from '@/models/User'
-import { RequestExtended, UserI } from '@/types/interfaces'
+import { RequestExtended, UserRegistrationI } from '@/types/interfaces'
 import * as crypt from '@/utils/crypt'
 import { sendMail } from '@/utils/sendMail'
 
@@ -101,7 +101,7 @@ export const confirmEmail = async (req: Request, res: Response) => {
   const potential = potentialUsers.find((u) => u.hash == hash)
   if (potential) {
     potentialUsers = potentialUsers.filter((u) => u.hash !== hash)
-    const userData: UserI = potential
+    const userData: UserRegistrationI = potential
     userData.pass = await crypt.hash(userData.pass)
     const user = await User.create(userData)
     const expires = moment().add(2, 'days').valueOf()

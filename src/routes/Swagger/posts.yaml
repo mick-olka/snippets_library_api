@@ -56,3 +56,78 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
+/posts/update/{id}:
+  patch:
+    description: Update post
+    tags: [post]
+    parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Post id'
+        required: true
+        type: 'string'
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            example:
+              title: 'how to install nodejs'
+              subtitle: 'for linux users!'
+              text: 'open terminal and print ```sudo npm install nodejs```  '
+    responses:
+      '200':
+        description: Success - post was updated
+        content:
+          application/json:
+            example:
+              message: 'Post was updated'
+              type: 'success'
+      '409':
+        description: Warning occurred
+        content:
+          application/json:
+            example:
+              message: 'Post was not found'
+              type: 'warning'
+      '500':
+        description: Some error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
+/posts/delete/{id}:
+  delete:
+    description: Update post
+    tags: [post]
+    parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Post id'
+        required: true
+        type: 'string'
+    responses:
+      '200':
+        description: Success - post was deleted
+        content:
+          application/json:
+            example:
+              message: 'Post was deleted'
+              type: 'success'
+      '409':
+        description: Warning occurred
+        content:
+          application/json:
+            example:
+              message: 'Post was not found'
+              type: 'warning'
+      '500':
+        description: Some error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
