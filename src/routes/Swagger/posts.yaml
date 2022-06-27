@@ -3,6 +3,17 @@
     summary: Returns a list of posts.
     tags: [post]
     description: Get all posts
+    parameters:
+      - name: 'limit'
+        in: 'query'
+        description: 'max items count'
+        required: false
+        type: 'string'
+      - name: 'offset'
+        in: 'query'
+        description: 'number of items to skip'
+        required: false
+        type: 'string'
     responses:
       '200':
         description: A JSON array of posts
@@ -11,7 +22,11 @@
             example:
               type: 'success'
               message: 'Posts received'
-              payload: [{ _id: f847js, title: post, subtitle: post about node, author: mick }]
+              payload:
+                {
+                  total: 13,
+                  items: [{ _id: f847js, title: post, subtitle: post about node, author: mick }],
+                }
       '500':
         description: Server Error
         content:

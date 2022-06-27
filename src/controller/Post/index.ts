@@ -17,8 +17,17 @@ export const createPost = async (req: RequestExtended, res: Response) => {
 }
 
 export const getPosts = async (req: Request, res: Response) => {
-  const posts = await Post.find().select('title subtitle author').populate('author', 'name')
-  res.status(200).json({ message: 'Posts received', type: 'success', payload: posts })
+  const { limit = 100, offset = 0 } = req.query
+  const filter = { public: true }
+  const posts = await Post.find(filter)
+    .limit(+limit)
+    .skip(+offset)
+    .select('title subtitle author')
+    .populate('author', 'name')
+  const total = await Post.countDocuments(filter)
+  res
+    .status(200)
+    .json({ message: 'Posts received', type: 'success', payload: { items: posts, total } })
 }
 
 export const updatePost = async (req: RequestExtended, res: Response) => {

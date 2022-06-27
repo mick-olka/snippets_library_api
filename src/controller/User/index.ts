@@ -28,8 +28,15 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 export const getUsers = async (req: Request, res: Response) => {
-  const users = await User.find().select('name email')
-  res.status(200).json({ message: 'Users received', type: 'success', payload: users })
+  const { limit = 100, offset = 0 } = req.query
+  const users = await User.find()
+    .limit(+limit)
+    .skip(+offset)
+    .select('name email')
+  const total = await User.countDocuments()
+  res
+    .status(200)
+    .json({ message: 'Users received', type: 'success', payload: { items: users, total } })
 }
 
 export const updateUser = async (req: RequestExtended, res: Response) => {
