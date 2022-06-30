@@ -9,10 +9,21 @@
         description: 'max items count'
         required: false
         type: 'string'
-      - name: 'offset'
+      - name: 'page'
         in: 'query'
-        description: 'number of items to skip'
+        description: 'page to show'
         required: false
+        type: 'string'
+      - name: 'regexp'
+        in: 'query'
+        description: 'search string'
+        required: false
+        type: 'string'
+      - name: 'tags'
+        in: 'query'
+        description: 'filter tags'
+        required: false
+        example: '["nodejs"]'
         type: 'string'
     responses:
       '200':
@@ -24,8 +35,25 @@
               message: 'Posts received'
               payload:
                 {
-                  total: 13,
-                  items: [{ _id: f847js, title: post, subtitle: post about node, author: mick }],
+                  totalDocs: 5,
+                  limit: 100,
+                  totalPages: 1,
+                  page: 1,
+                  pagingCounter: 1 NUM! (index of 1st el in page),
+                  hasPrevPage: false,
+                  hasNextPage: false,
+                  prevPage: null,
+                  nextPage: null,
+                  docs:
+                    [
+                      {
+                        _id: f847js,
+                        title: post,
+                        subtitle: post about node,
+                        author: { _id: fuirhggi, name: mick },
+                        tags: [node, js],
+                      },
+                    ],
                 }
       '500':
         description: Server Error

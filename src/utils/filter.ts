@@ -45,6 +45,19 @@ const isScalarType = (obj: any) => {
 }
 
 /**
+ * Returns null if string 'null'.
+ *
+ * @param obj
+ * @returns {boolean}
+ */
+export const nullifyString = (str: string | null | undefined) => {
+  if (str === 'null' || str === 'undefined' || str === '' || str === undefined) {
+    return null
+  }
+  return str
+}
+
+/**
  * Changes empty value to null.
  *
  * @param value

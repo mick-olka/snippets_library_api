@@ -1,8 +1,11 @@
+/* eslint-disable import/order */
 import { Request, Response } from 'express'
 
+import { PopulateOptions } from 'mongoose'
 import { Post } from '@/models/Post'
 import { User } from '@/models/User'
 import { RequestExtended } from '@/types/interfaces'
+import { nullifyString } from '@/utils/filter'
 
 export const createPost = async (req: RequestExtended, res: Response) => {
   if (!req.body) throw new Error('Body is empty')
@@ -17,17 +20,30 @@ export const createPost = async (req: RequestExtended, res: Response) => {
 }
 
 export const getPosts = async (req: Request, res: Response) => {
-  const { limit = 100, offset = 0 } = req.query
-  const filter = { public: true }
-  const posts = await Post.find(filter)
-    .limit(+limit)
-    .skip(+offset)
-    .select('title subtitle author')
-    .populate('author', 'name')
-  const total = await Post.countDocuments(filter)
-  res
-    .status(200)
-    .json({ message: 'Posts received', type: 'success', payload: { items: posts, total } })
+  // eslint-disable-next-line prefer-const
+  let { limit = 100, page = 1, regexp, tags } = req.query
+  let tagsFilter = nullifyString(tags as string)
+  const reg = nullifyString(regexp as string)
+  const filter: any = { public: true }
+  try {
+    if (tagsFilter) {
+      tagsFilter = tagsFilter.replace(/'/g, '"') // parse does not accepts "'"
+      tagsFilter = JSON.parse(tagsFilter as string)
+      if (Array.isArray(tagsFilter)) filter.tags = { $in: tagsFilter.map((t) => new RegExp(t)) }
+      else throw Error('Tags filter must be an array')
+    }
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ message: 'Provide valid tags', type: 'error', payload: null })
+  }
+  console.log(reg, tagsFilter)
+  const posts = await Post.paginate(filter, {
+    limit: +limit,
+    page: +page,
+    select: 'title subtitle author tags',
+    populate: { path: 'author', select: 'name' },
+  })
+  res.status(200).json({ message: 'Posts received', type: 'success', payload: posts })
 }
 
 export const updatePost = async (req: RequestExtended, res: Response) => {

@@ -1,4 +1,5 @@
-import mongoose, { Schema, model } from 'mongoose'
+import { Schema, model, PaginateModel } from 'mongoose'
+import paginate from 'mongoose-paginate-v2'
 
 const userSchema = new Schema({
   name: { type: String, required: true, unique: true },
@@ -7,7 +8,9 @@ const userSchema = new Schema({
   posts: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
 })
 
-export const User = model('Users', userSchema)
+userSchema.plugin(paginate)
+
+export const User = model<any, PaginateModel<any>>('Users', userSchema)
 
 // User.updateMany({ enabled: { $exists: false } }, { posts: [] }, (err: any, docs: any) => {
 //   if (err) console.log(err)

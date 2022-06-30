@@ -9,9 +9,9 @@
         description: 'max items count'
         required: false
         type: 'string'
-      - name: 'offset'
+      - name: 'page'
         in: 'query'
-        description: 'number of items to skip'
+        description: 'page'
         required: false
         type: 'string'
     responses:
@@ -35,7 +35,19 @@
             example:
               type: 'success'
               message: 'Users received'
-              payload: { total: 13, items: [{ _id: f847js, name: mick, email: mick@example.com }] }
+              payload:
+                {
+                  totalDocs: 5,
+                  limit: 100,
+                  totalPages: 1,
+                  page: 1,
+                  pagingCounter: 1 NUM! (index of 1st el in page),
+                  hasPrevPage: false,
+                  hasNextPage: false,
+                  prevPage: null,
+                  nextPage: null,
+                  docs: [{ _id: f847js, name: mick, email: mick@example.com }],
+                }
       '500':
         description: Server Error
         content:

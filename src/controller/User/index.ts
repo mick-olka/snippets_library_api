@@ -28,15 +28,16 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 export const getUsers = async (req: Request, res: Response) => {
-  const { limit = 100, offset = 0 } = req.query
-  const users = await User.find()
-    .limit(+limit)
-    .skip(+offset)
-    .select('name email')
-  const total = await User.countDocuments()
-  res
-    .status(200)
-    .json({ message: 'Users received', type: 'success', payload: { items: users, total } })
+  const { limit = 100, page = 1 } = req.query
+  const users = await User.paginate(
+    {},
+    {
+      limit: +limit,
+      page: +page,
+      select: 'name email',
+    },
+  )
+  res.status(200).json({ message: 'Users received', type: 'success', payload: users })
 }
 
 export const updateUser = async (req: RequestExtended, res: Response) => {
