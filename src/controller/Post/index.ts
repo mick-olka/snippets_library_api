@@ -36,7 +36,12 @@ export const getPosts = async (req: Request, res: Response) => {
     console.log(err)
     return res.status(500).json({ message: 'Provide valid tags', type: 'error', payload: null })
   }
-  console.log(reg, tagsFilter)
+  if (reg) {
+    filter.$or = [
+      { title: { $regex: reg, $options: 'i' } },
+      { subtitle: { $regex: reg, $options: 'i' } },
+    ]
+  }
   const posts = await Post.paginate(filter, {
     limit: +limit,
     page: +page,

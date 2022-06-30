@@ -14,6 +14,11 @@
         description: 'page'
         required: false
         type: 'string'
+      - name: 'regexp'
+        in: 'query'
+        description: 'search by name or email'
+        required: false
+        type: 'string'
     responses:
       '200':
         description: A JSON array of users

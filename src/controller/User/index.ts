@@ -9,6 +9,7 @@ import { randomBytes } from 'crypto'
 import { User } from '@/models/User'
 import { RequestExtended, UserRegistrationI } from '@/types/interfaces'
 import * as crypt from '@/utils/crypt'
+import { nullifyString } from '@/utils/filter'
 import { sendMail } from '@/utils/sendMail'
 
 interface PotentialUser {
@@ -28,15 +29,19 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 export const getUsers = async (req: Request, res: Response) => {
-  const { limit = 100, page = 1 } = req.query
-  const users = await User.paginate(
-    {},
-    {
-      limit: +limit,
-      page: +page,
-      select: 'name email',
-    },
-  )
+  const { limit = 100, page = 1, regexp } = req.query
+  const reg = nullifyString(regexp as string)
+  const filter: any = {}
+  if (reg)
+    filter.$or = [
+      { name: { $regex: reg, $options: 'i' } },
+      { email: { $regex: reg, $options: 'i' } },
+    ]
+  const users = await User.paginate(filter, {
+    limit: +limit,
+    page: +page,
+    select: 'name email',
+  })
   res.status(200).json({ message: 'Users received', type: 'success', payload: users })
 }
 
