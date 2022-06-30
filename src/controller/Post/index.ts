@@ -28,11 +28,17 @@ export const getPostDetails = async (req: RequestExtended, res: Response) => {
   res.json({ message: 'Post received', type: 'success', payload: post })
 }
 
-export const getPosts = async (req: Request, res: Response) => {
-  const { limit = 100, page = 1, regexp, tags } = req.query
+export const getPosts = async (req: RequestExtended, res: Response) => {
+  const { limit = 100, page = 1, regexp, tags, userId } = req.query
   let tagsFilter = nullifyString(tags as string)
   const reg = nullifyString(regexp as string)
   const filter: any = { public: true }
+  // if (req.user && userId) {
+  //   // if logged and isMe
+  //   if (userId === req.user.id) delete filter.public
+  //   console.log(userId, req.user.id)
+  // }
+  if (userId) filter.author = userId
   try {
     if (tagsFilter) {
       tagsFilter = tagsFilter.replace(/'/g, '"') // parse does not accepts "'"

@@ -25,6 +25,11 @@
         required: false
         example: '["nodejs"]'
         type: 'string'
+      - name: 'userId'
+        in: 'query'
+        description: filter by user
+        required: false
+        type: 'string'
     responses:
       '200':
         description: A JSON array of posts

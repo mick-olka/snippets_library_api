@@ -1,7 +1,5 @@
 import { Request, Response } from 'express'
-
 import { sign } from 'jsonwebtoken'
-
 import moment from 'moment'
 
 import { randomBytes } from 'crypto'
@@ -10,6 +8,7 @@ import { User } from '@/models/User'
 import { RequestExtended, UserRegistrationI } from '@/types/interfaces'
 import * as crypt from '@/utils/crypt'
 import { nullifyString } from '@/utils/filter'
+import { getQueryPageAndLimit } from '@/utils/object'
 import { sendMail } from '@/utils/sendMail'
 
 interface PotentialUser {
@@ -29,7 +28,7 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 export const getUsers = async (req: Request, res: Response) => {
-  const { limit = 100, page = 1, regexp } = req.query
+  const { limit = 100, page = 1, regexp } = getQueryPageAndLimit(req.query)
   const reg = nullifyString(regexp as string)
   const filter: any = {}
   if (reg)
@@ -46,9 +45,28 @@ export const getUsers = async (req: Request, res: Response) => {
 }
 
 export const getUserDetails = async (req: RequestExtended, res: Response) => {
+  const { page = 1, limit = 20 } = getQueryPageAndLimit(req.query)
   const userId = req.params.id
+  const authId = req.user.id
+  if (!authId) return res.status(401).json({ message: 'Need to login', type: 'warning' })
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const user = await User.findById(userId).select('name email')
+  const isMe = String(userId) === String(authId)
+  const match: any = {}
+  if (!isMe) match.public = true
+  const user = await User.findById(userId)
+    .select('name email posts')
+    .populate([
+      {
+        path: 'posts',
+        select: 'title subtitle',
+        options: {
+          sort: {},
+          skip: (+page - 1) * +limit,
+          limit: +limit,
+        },
+        match,
+      },
+    ])
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   res.json({ message: 'User received', type: 'success', payload: user })
 }
@@ -112,7 +130,7 @@ export const login = async (req: Request, res: Response) => {
   )
   res.json({
     message: 'user confirmed',
-    payload: { token, expires: moment(expires) },
+    payload: { token, expires: moment(expires), user },
     type: 'success',
   })
 }

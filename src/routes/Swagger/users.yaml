@@ -67,6 +67,16 @@
     tags: [user]
     description: Get user by id
     parameters:
+      - name: 'limit'
+        in: 'query'
+        description: 'max items count'
+        required: false
+        type: 'string'
+      - name: 'page'
+        in: 'query'
+        description: 'page'
+        required: false
+        type: 'string'
       - name: 'id'
         in: 'path'
         required: false
@@ -79,7 +89,20 @@
             example:
               type: 'success'
               message: 'User received'
-              payload: { _id: f847js, name: mick, email: mikcolka@gmail.com, posts: [] }
+              payload:
+                {
+                  _id: f847js,
+                  name: mick,
+                  email: mikcolka@gmail.com,
+                  posts:
+                    [
+                      {
+                        '_id': '62b9e38c0b77ad8fb16b71bc',
+                        'title': 'how to install node',
+                        'subtitle': 'for linux users',
+                      },
+                    ],
+                }
       '404':
         description: Not Found
       '500':
@@ -176,6 +199,7 @@
                 {
                   token: Bearer fjhu98gh7uh9iu9ryhf79g8ru9hu4g79ey8uhg,
                   expires: Sun Jun 26 2022 11:36:22 GMT+0300,
+                  user: userData,
                 }
               message: user confirmed
               type: success

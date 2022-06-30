@@ -1,5 +1,4 @@
-import { differenceBy, intersectionBy } from 'lodash-es'
-
+import { nullifyString } from './filter'
 /**
  * Get the copy of object without attributes.
  *
@@ -38,22 +37,32 @@ export const withOnlyAttrs = (obj: any, attrs: any[]) => {
   return result
 }
 
-/**
- * Compare array of two objects and find data that needs to be create, update
- * and delete.
- *
- * @param {Array} list1
- * @param {Array} list2
- * @param {String} key
- * @returns {Object}
- */
-export const difference = (list1: any[], list2: any[], key = 'id') => {
-  return {
-    create: list2
-      // eslint-disable-next-line no-prototype-builtins
-      .filter((obj) => obj.hasOwnProperty(key) && obj[key] === null)
-      .map((obj) => withoutAttrs(obj, [key])),
-    update: intersectionBy(list2, list1, key),
-    destroy: differenceBy(list1, list2, key).map((obj: any) => obj[key]),
-  }
+// /**
+//  * Compare array of two objects and find data that needs to be create, update
+//  * and delete.
+//  *
+//  * @param {Array} list1
+//  * @param {Array} list2
+//  * @param {String} key
+//  * @returns {Object}
+//  */
+// export const difference = (list1: any[], list2: any[], key = 'id') => {
+//   return {
+//     create: list2
+//       // eslint-disable-next-line no-prototype-builtins
+//       .filter((obj) => obj.hasOwnProperty(key) && obj[key] === null)
+//       .map((obj) => withoutAttrs(obj, [key])),
+//     update: intersectionBy(list2, list1, key),
+//     destroy: differenceBy(list1, list2, key).map((obj: any) => obj[key]),
+//   }
+// }
+
+export const getQueryPageAndLimit = (query: any) => {
+  const page0 = nullifyString(query.page),
+    limit0 = nullifyString(query.limit)
+  let page = 1,
+    limit = 10
+  if (page0 && !isNaN(Number(page0))) page = parseInt(query.page)
+  if (limit0 && !isNaN(Number(limit0))) limit = parseInt(query.limit)
+  return { ...query, page, limit }
 }
