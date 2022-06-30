@@ -1,7 +1,6 @@
 /* eslint-disable import/order */
 import { Request, Response } from 'express'
 
-import { PopulateOptions } from 'mongoose'
 import { Post } from '@/models/Post'
 import { User } from '@/models/User'
 import { RequestExtended } from '@/types/interfaces'
@@ -19,9 +18,18 @@ export const createPost = async (req: RequestExtended, res: Response) => {
   res.status(200).json({ message: 'Post created', type: 'success', payload: result })
 }
 
+export const getPostDetails = async (req: RequestExtended, res: Response) => {
+  const postId = req.params.id
+  if (!postId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
+  const post = await Post.findById(postId).populate({ path: 'author', select: 'name' })
+  if (!post) return res.status(404).json({ message: 'Not Found', type: 'warning' })
+  if (!post.public && String(post.author._id) !== String(req.user.id))
+    return res.status(404).json({ message: 'No Access', type: 'warning' })
+  res.json({ message: 'Post received', type: 'success', payload: post })
+}
+
 export const getPosts = async (req: Request, res: Response) => {
-  // eslint-disable-next-line prefer-const
-  let { limit = 100, page = 1, regexp, tags } = req.query
+  const { limit = 100, page = 1, regexp, tags } = req.query
   let tagsFilter = nullifyString(tags as string)
   const reg = nullifyString(regexp as string)
   const filter: any = { public: true }

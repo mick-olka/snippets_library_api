@@ -61,6 +61,35 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
+/users/{id}:
+  get:
+    summary: Returns user.
+    tags: [user]
+    description: Get user by id
+    parameters:
+      - name: 'id'
+        in: 'path'
+        required: false
+        type: 'string'
+    responses:
+      '200':
+        description: A JSON data of user
+        content:
+          application/json:
+            example:
+              type: 'success'
+              message: 'User received'
+              payload: { _id: f847js, name: mick, email: mikcolka@gmail.com, posts: [] }
+      '404':
+        description: Not Found
+      '500':
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
 /users/update/:
   patch:
     summary: update user if logged in

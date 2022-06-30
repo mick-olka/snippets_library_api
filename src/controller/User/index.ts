@@ -45,6 +45,14 @@ export const getUsers = async (req: Request, res: Response) => {
   res.status(200).json({ message: 'Users received', type: 'success', payload: users })
 }
 
+export const getUserDetails = async (req: RequestExtended, res: Response) => {
+  const userId = req.params.id
+  if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
+  const user = await User.findById(userId).select('name email')
+  if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
+  res.json({ message: 'User received', type: 'success', payload: user })
+}
+
 export const updateUser = async (req: RequestExtended, res: Response) => {
   if (!req.body) throw new Error('Body is empty')
   if (!req.user) throw new Error('User is not verified')

@@ -21,7 +21,7 @@
         type: 'string'
       - name: 'tags'
         in: 'query'
-        description: 'filter tags'
+        description: filter tags (do not use ')
         required: false
         example: '["nodejs"]'
         type: 'string'
@@ -55,6 +55,42 @@
                       },
                     ],
                 }
+      '500':
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
+/posts/{id}:
+  get:
+    summary: Returns post.
+    tags: [post]
+    description: Get posts by id
+    parameters:
+      - name: 'id'
+        in: 'path'
+        required: false
+        type: 'string'
+    responses:
+      '200':
+        description: A JSON data of post
+        content:
+          application/json:
+            example:
+              type: 'success'
+              message: 'Post received'
+              payload:
+                {
+                  _id: f847js,
+                  title: post,
+                  subtitle: post about node,
+                  author: { _id: fuirhggi, name: mick },
+                  tags: [node, js],
+                }
+      '404':
+        description: Not Found
       '500':
         description: Server Error
         content:
