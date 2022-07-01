@@ -45,16 +45,25 @@ export const getUsers = async (req: Request, res: Response) => {
 }
 
 export const getUserDetails = async (req: RequestExtended, res: Response) => {
-  const { page = 1, limit = 20 } = getQueryPageAndLimit(req.query)
   const userId = req.params.id
+  if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
+  const user = await User.findById(userId).select('name email posts')
+  if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
+  user.totalPosts = user.posts.length
+  res.json({ message: 'User received', type: 'success', payload: user })
+}
+
+export const getUserPosts = async (req: RequestExtended, res: Response) => {
+  const { page = 1, limit = 1000 } = getQueryPageAndLimit(req.query)
+  const match: any = {}
+  const userId = req.params.id
+  if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
   const authId = req.user.id
   if (!authId) return res.status(401).json({ message: 'Need to login', type: 'warning' })
-  if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
   const isMe = String(userId) === String(authId)
-  const match: any = {}
   if (!isMe) match.public = true
-  const user = await User.findById(userId)
-    .select('name email posts')
+  const user: any = await User.findById(userId)
+    .select('posts')
     .populate([
       {
         path: 'posts',
@@ -68,7 +77,17 @@ export const getUserDetails = async (req: RequestExtended, res: Response) => {
       },
     ])
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
-  res.json({ message: 'User received', type: 'success', payload: user })
+  const userPosts = {
+    page,
+    limit,
+    last: user.posts.length,
+    items: user.posts,
+  }
+  res.json({
+    message: 'User posts received',
+    type: 'success',
+    payload: userPosts,
+  })
 }
 
 export const updateUser = async (req: RequestExtended, res: Response) => {

@@ -67,16 +67,6 @@
     tags: [user]
     description: Get user by id
     parameters:
-      - name: 'limit'
-        in: 'query'
-        description: 'max items count'
-        required: false
-        type: 'string'
-      - name: 'page'
-        in: 'query'
-        description: 'page'
-        required: false
-        type: 'string'
       - name: 'id'
         in: 'path'
         required: false
@@ -94,7 +84,53 @@
                   _id: f847js,
                   name: mick,
                   email: mikcolka@gmail.com,
-                  posts:
+                  posts: ['473567846379478394'],
+                }
+      '404':
+        description: Not Found
+      '500':
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
+/users/{id}/posts:
+  get:
+    summary: Returns user posts.
+    tags: [user]
+    description: Get user posts
+    parameters:
+      - name: 'limit'
+        in: 'query'
+        description: 'max posts count'
+        required: false
+        type: 'string'
+      - name: 'page'
+        in: 'query'
+        description: 'page'
+        required: false
+        type: 'string'
+      - name: 'id'
+        in: 'path'
+        required: false
+        type: 'string'
+    responses:
+      '200':
+        description: A JSON data of user posts
+        content:
+          application/json:
+            example:
+              type: 'success'
+              message: 'User posts received'
+              payload:
+                {
+                  _id: f847js,
+                  page: 1,
+                  limit: 1000,
+                  last: 5,
+                  items:
                     [
                       {
                         '_id': '62b9e38c0b77ad8fb16b71bc',
