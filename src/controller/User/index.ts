@@ -5,7 +5,7 @@ import moment from 'moment'
 import { randomBytes } from 'crypto'
 
 import { selectArgsMinimized, User } from '@/models/User'
-import { RequestExtended, UserRegistrationI } from '@/types/interfaces'
+import { RequestExtended, UserI, UserRegistrationI } from '@/types/interfaces'
 import * as crypt from '@/utils/crypt'
 import { nullifyString } from '@/utils/filter'
 import { getQueryPageAndLimit } from '@/utils/object'
@@ -50,6 +50,7 @@ export const getUserDetails = async (req: RequestExtended, res: Response) => {
   const user = await User.findById(userId).select(selectArgsMinimized)
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   user.totalPosts = user.posts.length
+  delete user.posts
   res.json({ message: 'User received', type: 'success', payload: user })
 }
 
@@ -81,7 +82,7 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
       { subtitle: { $regex: reg, $options: 'i' } },
     ]
   }
-  const user: any = await User.findById(userId)
+  const user: UserI = await User.findById(userId)
     .select('posts')
     .populate([
       {

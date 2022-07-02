@@ -23,6 +23,8 @@ export interface PostI {
   text: string
   author: string
   public: boolean
+  upvoters: string[]
+  downvoters: string[]
 }
 export interface RequestExtended extends Request {
   user: { id: string; exp: string }

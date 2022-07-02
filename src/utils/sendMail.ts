@@ -4,6 +4,8 @@ import { createTransport } from 'nodemailer'
 import fs from 'fs'
 import path from 'path'
 
+import CONFIG from '@/config'
+
 export const sendMail = async (hash: string, email: string) => {
   const transporter = createTransport({
     host: 'smtp-mail.outlook.com', // hostname
@@ -13,14 +15,14 @@ export const sendMail = async (hash: string, email: string) => {
       ciphers: 'SSLv3',
     },
     auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PW,
+      user: CONFIG.MAIL.HOST,
+      pass: CONFIG.MAIL.PASS,
     },
   })
   const html = fs.readFileSync(path.resolve(__dirname, '../../views', 'mail.hbs'), 'utf8')
   const template = handlebars.compile(html)
   const data = {
-    link: process.env.FRONT_LINK + 'users/confirm/' + hash,
+    link: CONFIG.MAIL.CONFIRM_PAGE_URL + 'users/confirm/' + hash,
   }
   const htmlToSend = template(data)
   const mail = {

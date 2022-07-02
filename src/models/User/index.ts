@@ -26,7 +26,7 @@ userSchema.pre('findOneAndUpdate', async function (next) {
 userSchema.plugin(paginate)
 
 export const User = model<any, PaginateModel<any>>('Users', userSchema)
-export const selectArgsMinimized = 'name email about'
+export const selectArgsMinimized = 'name email about posts'
 
 // User.updateMany({ saved: { $exists: false } }, { saved: [] }, (err: any, docs: any) => {
 //   if (err) console.log(err)

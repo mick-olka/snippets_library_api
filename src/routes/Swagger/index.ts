@@ -52,6 +52,8 @@ export const definition = {
           subtitle: { type: 'string' },
           text: { type: 'string' },
           public: { type: 'boolean' },
+          upvoters: { type: 'array', items: { type: 'string' } },
+          downvoters: { type: 'array', items: { type: 'string' } },
         },
         xml: { name: 'Post' },
       },

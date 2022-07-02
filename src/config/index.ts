@@ -40,6 +40,11 @@ const CONFIG = {
       CLIENT_ID: process.env.COGNITO_CLIENT_ID,
     },
   },
+  MAIL: {
+    HOST: process.env.MAIL_USER,
+    PASS: process.env.MAIL_PW,
+    CONFIRM_PAGE_URL: process.env.CONFIRM_PAGE_URL || 'http://127.0.0.1:8000/',
+  },
   EXTERNAL: {
     API_KEY: process.env.API_KEY,
   },

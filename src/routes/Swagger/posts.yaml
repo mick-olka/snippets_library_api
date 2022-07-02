@@ -57,8 +57,8 @@
                         subtitle: post about node,
                         author: { _id: fuirhggi, name: mick },
                         tags: [node, js],
-                        upvoters: ['849hg89hght8g954e'],
-                        downvoters: ['849hg89hght8g954e'],
+                        upvotes: 14,
+                        downvotes: 2,
                       },
                     ],
                 }
