@@ -153,15 +153,16 @@
   patch:
     summary: update user if logged in
     tags: [user]
-    description: Update user (can't update email!!!)
+    description: Update user (can't update email and posts!!!)
     requestBody:
       required: true
       content:
         application/json:
           schema:
             example:
-              name: 'newName'
-              pass: 'new1234'
+              name: 'mick1'
+              pass: '1234'
+              about: 'I am Dominik de-Koku'
     responses:
       '200':
         description: Result

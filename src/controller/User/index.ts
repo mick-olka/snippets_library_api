@@ -4,7 +4,7 @@ import moment from 'moment'
 
 import { randomBytes } from 'crypto'
 
-import { User } from '@/models/User'
+import { selectArgsMinimized, User } from '@/models/User'
 import { RequestExtended, UserRegistrationI } from '@/types/interfaces'
 import * as crypt from '@/utils/crypt'
 import { nullifyString } from '@/utils/filter'
@@ -39,7 +39,7 @@ export const getUsers = async (req: Request, res: Response) => {
   const users = await User.paginate(filter, {
     limit: +limit,
     page: +page,
-    select: 'name email',
+    select: selectArgsMinimized,
   })
   res.status(200).json({ message: 'Users received', type: 'success', payload: users })
 }
@@ -47,7 +47,7 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUserDetails = async (req: RequestExtended, res: Response) => {
   const userId = req.params.id
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const user = await User.findById(userId).select('name email posts')
+  const user = await User.findById(userId).select(selectArgsMinimized)
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   user.totalPosts = user.posts.length
   res.json({ message: 'User received', type: 'success', payload: user })
@@ -76,6 +76,7 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
         match,
       },
     ])
+    .lean()
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   const userPosts = {
     page,
@@ -93,9 +94,9 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
 export const updateUser = async (req: RequestExtended, res: Response) => {
   if (!req.body) throw new Error('Body is empty')
   if (!req.user) throw new Error('User is not verified')
-  if (req.body.email) throw Error("Can't update email")
-  if (req.body.pass) req.body.pass = await crypt.hash(req.body.pass)
-  const result = await User.findByIdAndUpdate(req.user.id, req.body, { new: true })
+  const result = await User.findByIdAndUpdate(req.user.id, req.body, { new: true }).select(
+    selectArgsMinimized,
+  )
   res.status(200).json({ message: 'User updated', type: 'success', payload: result })
 }
 

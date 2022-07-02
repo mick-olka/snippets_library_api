@@ -22,6 +22,6 @@ export const authorize = async (req: RequestExtended, res: Response, next: NextF
     next()
   } catch (exception) {
     console.log({ exception })
-    res.status(403).json({ message: 'Authorization Error', type: 'error' })
+    res.status(401).json({ message: 'Authorization Error', type: 'error' })
   }
 }

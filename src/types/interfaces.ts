@@ -11,6 +11,7 @@ export interface UserI {
   _id: string
   name: string
   email: string
+  about: string
   pass: string
   posts: string[]
 }
@@ -21,7 +22,8 @@ export interface PostI {
   subtitle: string
   text: string
   author: string
+  public: boolean
 }
 export interface RequestExtended extends Request {
-  user: any
+  user: { id: string; exp: string }
 }

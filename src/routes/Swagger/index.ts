@@ -37,6 +37,7 @@ export const definition = {
           _id: { type: 'string' },
           name: { type: 'string' },
           email: { type: 'string' },
+          about: { type: 'string' },
           pass: { type: 'string' },
           posts: { type: 'array', items: { type: 'string' }, description: 'posts ids' },
         },
