@@ -8,7 +8,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   pass: { type: String, required: true },
   posts: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
-  saved: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
+  // saved: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
   about: { type: String, default: 'I am Dominik de-Koku' },
 })
 

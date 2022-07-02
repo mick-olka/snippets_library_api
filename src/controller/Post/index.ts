@@ -92,14 +92,23 @@ export const feedbackPost = async (req: RequestExtended, res: Response) => {
   positive = positive === 'false' ? false : true
   const update: any = {}
   if (positive) {
-    update.$pull = { downvoters: userId }
-    update.$addToSet = { upvoters: userId }
+    if (post.upvoters.includes(userId)) update.$pull = { upvoters: userId }
+    else update.$addToSet = { upvoters: userId }
+    update.$pullAll = { downvoters: [userId] }
   } else {
-    update.$pull = { upvoters: userId }
-    update.$addToSet = { downvoters: userId }
+    if (post.downvoters.includes(userId)) update.$pull = { downvoters: userId }
+    else update.$addToSet = { downvoters: userId }
+    update.$pullAll = { upvoters: [userId] }
   }
-  await Post.findByIdAndUpdate(id, update, { new: true })
-  res.status(200).json({ message: 'Feedback received', type: 'success', payload: { positive } })
+  const updated = await Post.findByIdAndUpdate(id, update, { new: true })
+  res.status(200).json({
+    message: 'Feedback received',
+    type: 'success',
+    payload: {
+      upvoted: updated.upvoters.includes(userId),
+      downvoted: updated.downvoters.includes(userId),
+    },
+  })
 }
 
 export const deletePost = async (req: RequestExtended, res: Response) => {
