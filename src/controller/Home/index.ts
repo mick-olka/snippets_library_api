@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 
-import { createTransport } from 'nodemailer'
-
 import * as homeService from '@/service/home'
 import { catchAsync } from '@/utils/catchAsync'
+import { sendMail } from '@/utils/sendMail'
 
 export const getAppInfo = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const result = homeService.getAppInfo()
@@ -15,31 +14,7 @@ export const getMainPage = catchAsync(async (req: Request, res: Response, next: 
   res.render('index', { title: 'Main', arr: [1, 2, 4] })
 })
 
-export const sendMail = async (req: Request, res: Response) => {
-  const transporter = createTransport({
-    host: 'smtp-mail.outlook.com', // hostname
-    secure: false, // TLS requires secureConnection to be false
-    port: 587, // port for secure SMTP
-    tls: {
-      ciphers: 'SSLv3',
-    },
-    auth: {
-      user: 'srenik_brek@outlook.com',
-      pass: '7m7RXC2dKTE2DjE',
-    },
-  })
-  const mail = {
-    from: 'srenik_brek@outlook.com',
-    to: 'pavelbin29@gmail.com',
-    subject: 'Test',
-    text: 'test message',
-  }
-  transporter.sendMail(mail, (err, info) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log(info.response)
-    }
-  })
+export const sendMailR = async (req: Request, res: Response) => {
+  await sendMail('hfueiwhfueiwhfueiw', 'pavelbin29@gmail.com')
   res.json({ message: 'Mail sent' })
 }
