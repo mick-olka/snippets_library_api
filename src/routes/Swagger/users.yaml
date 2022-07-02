@@ -112,6 +112,17 @@
         description: 'page'
         required: false
         type: 'string'
+      - name: 'regexp'
+        in: 'query'
+        description: 'search string'
+        required: false
+        type: 'string'
+      - name: 'tags'
+        in: 'query'
+        description: filter tags (do not use ')
+        required: false
+        example: '["nodejs"]'
+        type: 'string'
       - name: 'id'
         in: 'path'
         required: false
@@ -136,6 +147,8 @@
                         '_id': '62b9e38c0b77ad8fb16b71bc',
                         'title': 'how to install node',
                         'subtitle': 'for linux users',
+                        'tags': ['nodejs'],
+                        'author': '489h89h89hg89r5e',
                       },
                     ],
                 }

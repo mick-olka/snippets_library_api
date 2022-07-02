@@ -24,7 +24,7 @@ postSchema.pre('findOneAndUpdate', async function (next) {
 postSchema.plugin(paginate)
 
 export const Post = model<any, PaginateModel<any>>('Posts', postSchema)
-export const selectArgsMinimized = 'title subtitle author tags'
+export const selectArgsMinimized = 'title subtitle author tags upvoters downvoters'
 // Post.updateMany(
 //   { downvoters: { $exists: false } },
 //   { downvoters: [], upvoters: [] },

@@ -54,7 +54,9 @@ export const getUserDetails = async (req: RequestExtended, res: Response) => {
 }
 
 export const getUserPosts = async (req: RequestExtended, res: Response) => {
-  const { page = 1, limit = 1000 } = getQueryPageAndLimit(req.query)
+  const { page = 1, limit = 1000, tags, regexp } = getQueryPageAndLimit(req.query)
+  let tagsFilter = nullifyString(tags as string)
+  const reg = nullifyString(regexp as string)
   const match: any = {}
   const userId = req.params.id
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
@@ -62,12 +64,29 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
   if (!authId) return res.status(401).json({ message: 'Need to login', type: 'warning' })
   const isMe = String(userId) === String(authId)
   if (!isMe) match.public = true
+  try {
+    if (tagsFilter) {
+      tagsFilter = tagsFilter.replace(/'/g, '"') // parse does not accepts "'"
+      tagsFilter = JSON.parse(tagsFilter as string)
+      if (Array.isArray(tagsFilter)) match.tags = { $in: tagsFilter.map((t) => new RegExp(t)) }
+      else throw Error('Tags filter must be an array')
+    }
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ message: 'Provide valid tags', type: 'error', payload: null })
+  }
+  if (reg) {
+    match.$or = [
+      { title: { $regex: reg, $options: 'i' } },
+      { subtitle: { $regex: reg, $options: 'i' } },
+    ]
+  }
   const user: any = await User.findById(userId)
     .select('posts')
     .populate([
       {
         path: 'posts',
-        select: 'title subtitle',
+        select: 'title subtitle tags author',
         options: {
           sort: {},
           skip: (+page - 1) * +limit,
