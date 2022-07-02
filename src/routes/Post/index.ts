@@ -12,6 +12,8 @@ postsRouter.get('/', catchAsync(postController.getPosts))
 
 postsRouter.get('/:id', authorize, catchAsync(postController.getPostDetails))
 
+postsRouter.get('/:id/vote', authorize, catchAsync(postController.feedbackPost))
+
 postsRouter.post('/', authorize, catchAsync(postController.createPost))
 
 postsRouter.patch('/update/:id', authorize, catchAsync(postController.updatePost))

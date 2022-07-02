@@ -1,7 +1,7 @@
 /* eslint-disable import/order */
-import { Request, Response } from 'express'
+import { Response } from 'express'
 
-import { Post } from '@/models/Post'
+import { Post, selectArgsMinimized } from '@/models/Post'
 import { User } from '@/models/User'
 import { RequestExtended } from '@/types/interfaces'
 import { nullifyString } from '@/utils/filter'
@@ -59,7 +59,7 @@ export const getPosts = async (req: RequestExtended, res: Response) => {
   const posts = await Post.paginate(filter, {
     limit: +limit,
     page: +page,
-    select: 'title subtitle author tags',
+    select: selectArgsMinimized,
     populate: { path: 'author', select: 'name' },
   })
   res.status(200).json({ message: 'Posts received', type: 'success', payload: posts })
@@ -73,9 +73,33 @@ export const updatePost = async (req: RequestExtended, res: Response) => {
   const post = await Post.findById(id)
   if (!post) return res.status(404).json({ type: 'warning', message: 'No such post' })
   if (req.user.id !== String(post.author))
-    return res.status(403).json({ type: 'warning', message: 'You do not have permission' })
+    return res.status(402).json({ type: 'warning', message: 'You do not have permission' })
   const result = await Post.findByIdAndUpdate(id, req.body, { new: true })
   res.status(200).json({ message: 'Post updated', type: 'success', payload: result })
+}
+
+export const feedbackPost = async (req: RequestExtended, res: Response) => {
+  const id = req.params.id
+  if (!id) throw new Error('Post id needed')
+  if (!req.user) throw new Error('User is not verified')
+  const userId = req.user.id
+  const post = await Post.findById(id)
+  if (!post) return res.status(404).json({ type: 'warning', message: 'No such post' })
+  //  if author is me
+  if (userId === String(post.author))
+    return res.status(403).json({ type: 'warning', message: "You can't vote your post" })
+  let positive: any = req.query.positive || 'true'
+  positive = positive === 'false' ? false : true
+  const update: any = {}
+  if (positive) {
+    update.$pull = { downvoters: userId }
+    update.$addToSet = { upvoters: userId }
+  } else {
+    update.$pull = { upvoters: userId }
+    update.$addToSet = { downvoters: userId }
+  }
+  await Post.findByIdAndUpdate(id, update, { new: true })
+  res.status(200).json({ message: 'Feedback received', type: 'success', payload: { positive } })
 }
 
 export const deletePost = async (req: RequestExtended, res: Response) => {

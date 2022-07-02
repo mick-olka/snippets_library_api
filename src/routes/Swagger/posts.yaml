@@ -104,6 +104,40 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
+/posts/{id}/vote:
+  get:
+    summary: Receives a feedback
+    tags: [post]
+    description: Give positive or negative vote
+    parameters:
+      - name: 'id'
+        in: 'path'
+        required: false
+        type: 'string'
+      - name: 'positive'
+        in: 'query'
+        description: 'true | false'
+        required: false
+        type: 'string'
+    responses:
+      '200':
+        description: Feedback success
+        content:
+          application/json:
+            example:
+              type: 'success'
+              message: 'Post received'
+              payload: { positive: true }
+      '404':
+        description: Not Found
+      '500':
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
 /posts/:
   post:
     description: Create post
