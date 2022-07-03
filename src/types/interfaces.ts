@@ -4,7 +4,7 @@ export interface UserRegistrationI {
   name: string
   email: string
   hash: string
-  pass: string
+  password: string
 }
 
 export interface UserI {
@@ -12,7 +12,7 @@ export interface UserI {
   name: string
   email: string
   about: string
-  pass: string
+  password: string
   posts: string[]
 }
 

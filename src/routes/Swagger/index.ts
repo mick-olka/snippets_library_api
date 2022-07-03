@@ -38,7 +38,7 @@ export const definition = {
           name: { type: 'string' },
           email: { type: 'string' },
           about: { type: 'string' },
-          pass: { type: 'string' },
+          password: { type: 'string' },
           posts: { type: 'array', items: { type: 'string' }, description: 'posts ids' },
         },
         xml: { name: 'User' },

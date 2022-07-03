@@ -84,6 +84,7 @@
                   _id: f847js,
                   name: mick,
                   email: mikcolka@gmail.com,
+                  about: 'I am Dominik de-Koku',
                   posts: ['473567846379478394'],
                 }
       '404':
@@ -174,7 +175,7 @@
           schema:
             example:
               name: 'mick1'
-              pass: '1234'
+              password: '1234'
               about: 'I am Dominik de-Koku'
     responses:
       '200':
@@ -205,7 +206,7 @@
             example:
               name: 'mick'
               email: 'mick@f.com'
-              pass: '1234'
+              password: '1234'
     responses:
       '200':
         description: Success - validation email sent
@@ -238,7 +239,7 @@
           schema:
             example:
               login: 'mick'
-              pass: '1234'
+              password: '1234'
     responses:
       '200':
         description: Success - user logged in - token received

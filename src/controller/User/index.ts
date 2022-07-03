@@ -4,7 +4,7 @@ import moment from 'moment'
 
 import { randomBytes } from 'crypto'
 
-import { selectArgsMinimized, User } from '@/models/User'
+import { selectArgsMinimized, selectUserWithoutPosts, User } from '@/models/User'
 import { RequestExtended, UserI, UserRegistrationI } from '@/types/interfaces'
 import * as crypt from '@/utils/crypt'
 import { nullifyString } from '@/utils/filter'
@@ -14,7 +14,7 @@ import { sendMail } from '@/utils/sendMail'
 interface PotentialUser {
   name: string
   email: string
-  pass: string
+  password: string
   hash: string
 }
 
@@ -47,7 +47,7 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUserDetails = async (req: RequestExtended, res: Response) => {
   const userId = req.params.id
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const user = await User.findById(userId).select(selectArgsMinimized)
+  const user = await User.findById(userId)
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   user.totalPosts = user.posts.length
   delete user.posts
@@ -115,14 +115,15 @@ export const updateUser = async (req: RequestExtended, res: Response) => {
   if (!req.body) throw new Error('Body is empty')
   if (!req.user) throw new Error('User is not verified')
   const result = await User.findByIdAndUpdate(req.user.id, req.body, { new: true }).select(
-    selectArgsMinimized,
+    selectUserWithoutPosts,
   )
   res.status(200).json({ message: 'User updated', type: 'success', payload: result })
 }
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, pass } = req.body
-  if (!name || !email || !pass) throw new Error('Invalid credentials: name & email & pass needed') //  not res to log for dev mode
+  const { name, email, password } = req.body
+  if (!name || !email || !password)
+    throw new Error('Invalid credentials: name & email & password needed') //  not res to log for dev mode
   const alreadyPotential = potentialUsers.find((u) => u.email == email)
   if (alreadyPotential)
     return res
@@ -135,7 +136,7 @@ export const register = async (req: Request, res: Response) => {
       .json({ message: 'User with such name or email already exists', type: 'warning' })
   }
   const hash = randomBytes(32).toString('hex')
-  potentialUsers.push({ name, email, pass, hash })
+  potentialUsers.push({ name, email, password, hash })
   setTimeout(() => {
     potentialUsers = potentialUsers.filter((u) => u.hash !== hash)
   }, 1000 * 60 * 5) // delete after 5 min
@@ -148,18 +149,20 @@ export const register = async (req: Request, res: Response) => {
 }
 
 export const login = async (req: Request, res: Response) => {
-  const { login, pass } = req.body
-  if (!login || !pass)
+  const { login, password } = req.body
+  if (!login || !password)
     return res
       .status(401)
-      .json({ message: 'Invalid Credentials: login & pass needed', type: 'warning' })
+      .json({ message: 'Invalid Credentials: login & password needed', type: 'warning' })
   const user = await User.findOne({ $or: [{ name: login }, { email: login }] })
   if (!user) {
     return res.status(404).json({ message: 'No user with such credentials', type: 'warning' })
   }
-  const success = await crypt.compare(pass, user.pass)
+  const success = await crypt.compare(password, user.password)
   if (!success)
-    return res.status(401).json({ message: 'Credentials: invalid login or pass', type: 'error' })
+    return res
+      .status(401)
+      .json({ message: 'Credentials: invalid login or password', type: 'error' })
   const expires = moment().add(2, 'days').valueOf()
   const token = sign(
     {
@@ -181,7 +184,7 @@ export const confirmEmail = async (req: Request, res: Response) => {
   if (potential) {
     potentialUsers = potentialUsers.filter((u) => u.hash !== hash)
     const userData: UserRegistrationI = potential
-    userData.pass = await crypt.hash(userData.pass)
+    userData.password = await crypt.hash(userData.password)
     const user = await User.create(userData)
     const expires = moment().add(2, 'days').valueOf()
     const token = sign(
