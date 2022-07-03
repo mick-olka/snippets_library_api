@@ -85,7 +85,7 @@
                   name: mick,
                   email: mikcolka@gmail.com,
                   about: 'I am Dominik de-Koku',
-                  posts: ['473567846379478394'],
+                  totalPosts: 5,
                 }
       '404':
         description: Not Found
