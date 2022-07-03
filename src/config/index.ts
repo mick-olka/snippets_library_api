@@ -12,7 +12,7 @@ const CONFIG = {
     AUTHORS: pkg.authors,
     HOST: process.env.APP_HOST || '127.0.0.1',
     BASE_URL: process.env.API_BASE_URL,
-    PORT: process.env.NODE_ENV === 'test' ? 8888 : process.env.PORT || 8080,
+    PORT: process.env.PORT || 4000,
     ENV: process.env.NODE_ENV,
   },
   LOG: {
@@ -43,7 +43,7 @@ const CONFIG = {
   MAIL: {
     HOST: process.env.MAIL_USER,
     PASS: process.env.MAIL_PW,
-    CONFIRM_PAGE_URL: process.env.CONFIRM_PAGE_URL || 'http://127.0.0.1:8000/',
+    CONFIRM_PAGE_URL: process.env.CONFIRM_PAGE_URL || 'http://127.0.0.1:4000/',
   },
   EXTERNAL: {
     API_KEY: process.env.API_KEY,

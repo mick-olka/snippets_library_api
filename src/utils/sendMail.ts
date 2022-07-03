@@ -29,7 +29,7 @@ export const sendMail = async (hash: string, email: string) => {
     from: process.env.MAIL_USER,
     to: email,
     subject: 'Confirm email',
-    //text: 'http://192.168.0.103:8000/users/confirm/' + hash,
+    //text: 'http://192.168.0.103:4000/users/confirm/' + hash,
     html: htmlToSend,
   }
   return await transporter.sendMail(mail)

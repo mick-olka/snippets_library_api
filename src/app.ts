@@ -17,7 +17,7 @@ import * as errorHandler from '@/middlewares/ErrorHandler'
 import home from '@/routes/Home'
 import { initSwagger } from '@/swagger'
 
-const whitelist = ['localhost:8080', '192.168.0.103:8080']
+const whitelist = ['localhost:3000', '192.168.0.103:3000']
 const options: cors.CorsOptions = {
   origin: whitelist,
 }
