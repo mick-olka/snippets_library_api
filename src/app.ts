@@ -17,9 +17,15 @@ import * as errorHandler from '@/middlewares/ErrorHandler'
 import home from '@/routes/Home'
 import { initSwagger } from '@/swagger'
 
-const whitelist = ['localhost:3000', '192.168.0.103:3000']
+const whitelist = ['http://localhost:3000', 'http://192.168.0.103:3000', 'http://127.0.0.1:3000']
 const options: cors.CorsOptions = {
-  origin: whitelist,
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin!) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
 }
 
 export const app = express()
