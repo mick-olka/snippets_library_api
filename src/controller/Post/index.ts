@@ -3,7 +3,7 @@ import { Response } from 'express'
 
 import { Post, selectArgsMinimized } from '@/models/Post'
 import { User } from '@/models/User'
-import { PostI, RequestExtended } from '@/types/interfaces'
+import { RequestExtended } from '@/types/interfaces'
 import { nullifyString } from '@/utils/filter'
 
 export const createPost = async (req: RequestExtended, res: Response) => {
@@ -63,7 +63,6 @@ export const getPosts = async (req: RequestExtended, res: Response) => {
     populate: { path: 'author', select: 'name' },
     lean: true,
   })
-  console.log(posts.docs)
   posts.docs = posts.docs.map((p: any) => {
     const post = { ...p }
     post.upvotes = p.upvoters.length
