@@ -15,6 +15,7 @@ export const getMainPage = catchAsync(async (req: Request, res: Response, next: 
 })
 
 export const sendMailR = async (req: Request, res: Response) => {
-  await sendMail('hfueiwhfueiwhfueiw', 'pavelbin29@gmail.com')
+  const mail = req.params.mail
+  await sendMail('hfueiwhfueiwhfueiw', mail)
   res.json({ message: 'Mail sent' })
 }

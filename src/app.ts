@@ -20,9 +20,12 @@ import { initSwagger } from '@/swagger'
 const whitelist = [
   'http://localhost:3000',
   'http://localhost:4000',
-  'http://192.168.0.103:3000',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:4000',
+  'http://192.168.0.103:3000',
+  'http://192.168.0.103:4000',
+  'https://srenik.pp.ua',
+  'http://srenik.pp.ua',
 ]
 const options: cors.CorsOptions = {
   origin: function (origin, callback) {
@@ -60,16 +63,27 @@ app.use(
 )
 app.use(express_static(path.join(__dirname, '../public')))
 app.use(cors(options))
-app.use(helmet())
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [`'self'`],
+        styleSrc: [`'self'`, `'unsafe-inline'`],
+        imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
+        scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+      },
+    },
+  }),
+)
 app.use(morgan('dev')) //  logging
 //  expects request data to be sent in JSON format, which often resembles a simple JS object
 app.use(json())
 //  expects request data to be sent encoded in the URL, usually in strings or arrays
 app.use(urlencoded({ extended: true }))
 // API Routes
-app.use('/', home)
-app.use('/users', usersRouter)
-app.use('/posts', postsRouter)
+app.use('/api/', home)
+app.use('/api/users', usersRouter)
+app.use('/api/posts', postsRouter)
 initSwagger(app)
 // Error Middleware
 app.use(errorHandler.genericErrorHandler)

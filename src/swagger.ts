@@ -12,9 +12,6 @@ export const initSwagger = (app: Application) => {
     apis: [path.resolve(__dirname, './routes/*/*.ts')],
   }
 
-  //console.log(options0.apis)
-  //console.log(options.apis)
-
   const specs = swaggerJsDoc(options)
   app.use(
     '/api-docs',

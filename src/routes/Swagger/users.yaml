@@ -1,4 +1,4 @@
-/users:
+/api/users:
   get:
     summary: Returns a list of users.
     tags: [user]
@@ -61,7 +61,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/users/{id}:
+/api/users/{id}:
   get:
     summary: Returns user.
     tags: [user]
@@ -97,7 +97,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/users/{id}/posts:
+/api/users/{id}/posts:
   get:
     summary: Returns user posts.
     tags: [user]
@@ -163,7 +163,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/users/update/:
+/api/users/update/:
   patch:
     summary: update user if logged in
     tags: [user]
@@ -194,7 +194,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/users/register:
+/api/users/register:
   post:
     description: Register user
     tags: [user]
@@ -228,7 +228,7 @@
           application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-/users/login:
+/api/users/login:
   post:
     description: Login user
     tags: [user]
@@ -267,7 +267,7 @@
           application/json:
             schema:
               $ref: '#/components/schemas/ApiResponse'
-/users/confirm/{hash}:
+/api/users/confirm/{hash}:
   get:
     summary: Creates user after confirm
     tags: [user]

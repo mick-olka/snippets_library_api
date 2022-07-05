@@ -1,4 +1,4 @@
-/:
+/api/:
   get:
     description: Get App Data
     tags: [home]
