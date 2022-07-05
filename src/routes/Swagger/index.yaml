@@ -1,4 +1,4 @@
-/index:
+/api/index:
   get:
     description: Get Main page
     tags: [pages]

@@ -18,8 +18,8 @@ export const definition = {
   },
   basePath: '/',
   servers: [
-    { url: `http://localhost:${process.env.PORT || 4000}` },
     { url: `http://192.168.0.103:${process.env.PORT || 4000}` },
+    { url: `http://localhost:${process.env.PORT || 4000}` },
   ],
   tags: [
     {
@@ -27,7 +27,6 @@ export const definition = {
       description: 'Operations about user',
     },
   ],
-  schemes: ['https', 'http'],
   paths,
   components: {
     schemas: {

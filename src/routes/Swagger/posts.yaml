@@ -1,4 +1,4 @@
-/posts:
+/api/posts:
   get:
     summary: Returns a list of posts.
     tags: [post]
@@ -70,7 +70,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/posts/{id}:
+/api/posts/{id}:
   get:
     summary: Returns post.
     tags: [post]
@@ -106,7 +106,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/posts/{id}/vote:
+/api/posts/{id}/vote:
   get:
     summary: Receives a feedback
     tags: [post]
@@ -140,7 +140,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/posts/:
+/api/posts/:
   post:
     description: Create post
     tags: [post]
@@ -176,7 +176,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/posts/update/{id}:
+/api/posts/update/{id}:
   patch:
     description: Update post
     tags: [post]
@@ -218,7 +218,7 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
-/posts/delete/{id}:
+/api/posts/delete/{id}:
   delete:
     description: Update post
     tags: [post]
