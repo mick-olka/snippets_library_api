@@ -18,8 +18,8 @@ export const definition = {
   },
   basePath: '/',
   servers: [
-    { url: `http://192.168.0.103:${process.env.PORT || 4000}` },
     { url: `http://localhost:${process.env.PORT || 4000}` },
+    { url: `https://srenik.pp.ua` },
   ],
   tags: [
     {
