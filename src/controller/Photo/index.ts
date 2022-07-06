@@ -1,4 +1,5 @@
 import { Response } from 'express'
+import sharp from 'sharp'
 
 import fs from 'fs'
 import path from 'path'
@@ -18,7 +19,14 @@ export const updatePhoto = async (req: RequestExtended, res: Response) => {
     return res.status(402).json({ message: 'No file received', type: 'warning' })
   const fileName = req.user.name + '.' + format
   const filePath = path.resolve(__dirname, '../../../uploads/', fileName)
-  fs.createWriteStream(filePath).write(buffer)
+  await sharp(buffer)
+    .resize(180, 180)
+    .toFile(filePath, (err) => {
+      if (err) {
+        console.log(err)
+        throw new Error(err.message)
+      }
+    })
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { photo: fileName },
