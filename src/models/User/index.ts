@@ -1,11 +1,13 @@
+import { nullifyString } from './../../utils/filter'
 import { Schema, model, PaginateModel } from 'mongoose'
 import paginate from 'mongoose-paginate-v2'
 
 import CONFIG from '@/config'
 import * as crypt from '@/utils/crypt'
 
-const preparePhotoLink = (photo: string) => {
-  return CONFIG.APP.BASE_URL + '/uploads/' + photo
+const preparePhotoLink = (photo: string | null) => {
+  if (photo) return CONFIG.APP.BASE_URL + '/uploads/' + photo
+  return null
 }
 
 const userSchema = new Schema(
