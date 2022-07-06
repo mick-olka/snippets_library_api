@@ -20,7 +20,7 @@ export const updatePhoto = async (req: RequestExtended, res: Response) => {
   const fileName = req.user.name + '.' + format
   const filePath = path.resolve(__dirname, '../../../uploads/', fileName)
   await sharp(buffer)
-    .resize(180, 180)
+    .resize(460, 460)
     .toFile(filePath, (err) => {
       if (err) {
         console.log(err)
