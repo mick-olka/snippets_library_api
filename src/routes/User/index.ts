@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import { catchAsync } from './../../utils/catchAsync'
 
+import * as photoController from '../../controller/Photo/index'
 import * as userController from '../../controller/User/index'
 
 import { authorize } from '@/middlewares/authorize'
@@ -21,3 +22,5 @@ usersRouter.post('/register', catchAsync(userController.register))
 usersRouter.post('/login', catchAsync(userController.login))
 
 usersRouter.get('/confirm/:hash', catchAsync(userController.confirmEmail))
+
+usersRouter.put('/photo', authorize, catchAsync(photoController.updatePhoto))

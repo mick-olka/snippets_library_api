@@ -5,7 +5,8 @@ import moment from 'moment'
 import { randomBytes } from 'crypto'
 
 import { selectArgsMinimized, selectUserWithoutPosts, User } from '@/models/User'
-import { RequestExtended, UserI, UserRegistrationI } from '@/types/interfaces'
+import { UserI, UserRegistrationI } from '@/types/interfaces'
+import { RequestExtended } from '@/types/Request'
 import * as crypt from '@/utils/crypt'
 import { nullifyString } from '@/utils/filter'
 import { getQueryPageAndLimit } from '@/utils/object'
@@ -61,7 +62,7 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
   const match: any = {}
   const userId = req.params.id
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const authId = req.user.id
+  const authId = req.user._id
   if (!authId) return res.status(401).json({ message: 'Need to login', type: 'warning' })
   const isMe = String(userId) === String(authId)
   if (!isMe) match.public = true
@@ -114,7 +115,7 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
 export const updateUser = async (req: RequestExtended, res: Response) => {
   if (!req.body) throw new Error('Body is empty')
   if (!req.user) throw new Error('User is not verified')
-  const result = await User.findByIdAndUpdate(req.user.id, req.body, { new: true }).select(
+  const result = await User.findByIdAndUpdate(req.user._id, req.body, { new: true }).select(
     selectUserWithoutPosts,
   )
   res.status(200).json({ message: 'User updated', type: 'success', payload: result })

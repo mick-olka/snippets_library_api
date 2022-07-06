@@ -6,8 +6,9 @@ const all = YAML.load(path.resolve(__dirname, './paths.yaml'))
 const index = YAML.load(path.resolve(__dirname, './index.yaml'))
 const users = YAML.load(path.resolve(__dirname, './users.yaml'))
 const posts = YAML.load(path.resolve(__dirname, './posts.yaml'))
+const photos = YAML.load(path.resolve(__dirname, './photo.yaml'))
 
-export const paths = Object.assign(all, index, users, posts)
+export const paths = Object.assign(all, index, users, posts, photos)
 
 export const definition = {
   openapi: '3.0.0',
@@ -38,6 +39,7 @@ export const definition = {
           email: { type: 'string' },
           about: { type: 'string' },
           password: { type: 'string' },
+          photo: { type: 'string' },
           posts: { type: 'array', items: { type: 'string' }, description: 'posts ids' },
         },
         xml: { name: 'User' },

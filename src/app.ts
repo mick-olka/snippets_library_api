@@ -2,7 +2,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { config } from 'dotenv'
 import express, { json, static as express_static, urlencoded } from 'express'
-import helmet from 'helmet'
+import bodyParser from 'express'
 import mongoose from 'mongoose'
 import morgan from 'morgan'
 import sassMiddleware from 'node-sass-middleware'
@@ -62,19 +62,14 @@ app.use(
   }),
 )
 app.use(express_static(path.join(__dirname, '../public')))
+app.use('/uploads', express_static(path.join(__dirname, '../uploads')))
 app.use(cors(options))
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: [`'self'`],
-        styleSrc: [`'self'`, `'unsafe-inline'`],
-        imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
-        scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
-      },
-    },
-  }),
-)
+const rawOptions = {
+  inflate: true,
+  limit: '5000kb',
+  type: ['image/jpeg', 'image/png'],
+}
+app.use(bodyParser.raw(rawOptions))
 app.use(morgan('dev')) //  logging
 //  expects request data to be sent in JSON format, which often resembles a simple JS object
 app.use(json())
