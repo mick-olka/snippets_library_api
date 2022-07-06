@@ -1,7 +1,6 @@
 import { Response } from 'express'
 import sharp from 'sharp'
 
-import fs from 'fs'
 import path from 'path'
 
 import { selectArgsMinimized, User } from '@/models/User'

@@ -15,6 +15,7 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     photo: { type: String, default: null, get: preparePhotoLink },
     posts: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
+    saves: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
     about: { type: String, default: 'I am Dominik de-Koku' },
   },
   {
@@ -44,7 +45,7 @@ export const User = model<any, PaginateModel<any>>('Users', userSchema)
 export const selectArgsMinimized = 'name email photo'
 export const selectUserWithoutPosts = 'name email about photo'
 
-// User.updateMany({}, { $rename: { password: 'pass' } }, (err: any, docs: any) => {
+// User.updateMany({ saves: { $exists: false } }, { saves: [] }, (err: any, docs: any) => {
 //   if (err) console.log(err)
 //   else console.log(docs)
 // })

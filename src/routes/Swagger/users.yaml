@@ -51,7 +51,15 @@
                   hasNextPage: false,
                   prevPage: null,
                   nextPage: null,
-                  docs: [{ _id: f847js, name: mick, email: mick@example.com }],
+                  docs:
+                    [
+                      {
+                        _id: f847js,
+                        name: mick,
+                        email: mick@example.com,
+                        photo: 'https://srenik.pp.ua/uploads/mick.jpg',
+                      },
+                    ],
                 }
       '500':
         description: Server Error
@@ -85,7 +93,9 @@
                   name: mick,
                   email: mikcolka@gmail.com,
                   about: 'I am Dominik de-Koku',
+                  photo: 'https://srenik.pp.ua/uploads/mick.jpg',
                   totalPosts: 5,
+                  totalSaves: 2,
                 }
       '404':
         description: Not Found
@@ -163,6 +173,72 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
+/api/users/{id}/saves:
+  get:
+    summary: Returns user saves.
+    tags: [user]
+    description: Get user saves
+    parameters:
+      - name: 'limit'
+        in: 'query'
+        description: 'max posts count'
+        required: false
+        type: 'string'
+      - name: 'page'
+        in: 'query'
+        description: 'page'
+        required: false
+        type: 'string'
+      - name: 'regexp'
+        in: 'query'
+        description: 'search string'
+        required: false
+        type: 'string'
+      - name: 'tags'
+        in: 'query'
+        description: filter tags (do not use ')
+        required: false
+        example: '["nodejs"]'
+        type: 'string'
+      - name: 'id'
+        in: 'path'
+        required: false
+        type: 'string'
+    responses:
+      '200':
+        description: A JSON data of user saves
+        content:
+          application/json:
+            example:
+              type: 'success'
+              message: 'User saves received'
+              payload:
+                {
+                  _id: f847js,
+                  page: 1,
+                  limit: 1000,
+                  last: 5,
+                  items:
+                    [
+                      {
+                        '_id': '62b9e38c0b77ad8fb16b71bc',
+                        'title': 'how to install node',
+                        'subtitle': 'for linux users',
+                        'tags': ['nodejs'],
+                        'author': '489h89h89hg89r5e',
+                      },
+                    ],
+                }
+      '404':
+        description: Not Found
+      '500':
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
 /api/users/update/:
   patch:
     summary: update user if logged in
@@ -177,6 +253,7 @@
               name: 'mick1'
               password: '1234'
               about: 'I am Dominik de-Koku'
+              saves: []
     responses:
       '200':
         description: Result

@@ -51,7 +51,9 @@ export const getUserDetails = async (req: RequestExtended, res: Response) => {
   const user = await User.findById(userId)
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   user.totalPosts = user.posts.length
+  user.totalSaves = user.saves.length
   delete user.posts
+  delete user.saves
   res.json({ message: 'User received', type: 'success', payload: user })
 }
 
@@ -63,7 +65,6 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
   const userId = req.params.id
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
   const authId = req.user._id
-  if (!authId) return res.status(401).json({ message: 'Need to login', type: 'warning' })
   const isMe = String(userId) === String(authId)
   if (!isMe) match.public = true
   try {
@@ -98,7 +99,7 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
       },
     ])
     .lean()
-  if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
+  if (!user) return res.status(404).json({ message: 'No user with such id', type: 'warning' })
   const userPosts = {
     page,
     limit,
@@ -107,6 +108,62 @@ export const getUserPosts = async (req: RequestExtended, res: Response) => {
   }
   res.json({
     message: 'User posts received',
+    type: 'success',
+    payload: userPosts,
+  })
+}
+
+export const getMySaves = async (req: RequestExtended, res: Response) => {
+  const { page = 1, limit = 1000, tags, regexp } = getQueryPageAndLimit(req.query)
+  let tagsFilter = nullifyString(tags as string)
+  const reg = nullifyString(regexp as string)
+  const match: any = {}
+  const userId = req.params.id
+  if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
+  const authId = req.user._id
+  const isMe = String(userId) === String(authId)
+  if (!isMe) match.public = true
+  try {
+    if (tagsFilter) {
+      tagsFilter = tagsFilter.replace(/'/g, '"') // parse does not accepts "'"
+      tagsFilter = JSON.parse(tagsFilter as string)
+      if (Array.isArray(tagsFilter)) match.tags = { $in: tagsFilter.map((t) => new RegExp(t)) }
+      else throw Error('Tags filter must be an array')
+    }
+  } catch (err) {
+    console.log(err)
+    return res.status(500).json({ message: 'Provide valid tags', type: 'error', payload: null })
+  }
+  if (reg) {
+    match.$or = [
+      { title: { $regex: reg, $options: 'i' } },
+      { subtitle: { $regex: reg, $options: 'i' } },
+    ]
+  }
+  const user: UserI = await User.findById(userId)
+    .select('saves')
+    .populate([
+      {
+        path: 'saves',
+        select: 'title subtitle tags author',
+        options: {
+          sort: {},
+          skip: (+page - 1) * +limit,
+          limit: +limit,
+        },
+        match,
+      },
+    ])
+    .lean()
+  if (!user) return res.status(404).json({ message: 'No user with such id', type: 'warning' })
+  const userPosts = {
+    page,
+    limit,
+    last: user.saves.length,
+    items: user.saves,
+  }
+  res.json({
+    message: 'User saves received',
     type: 'success',
     payload: userPosts,
   })
