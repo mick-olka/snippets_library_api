@@ -34,8 +34,6 @@ userSchema.pre('findOneAndUpdate', async function (next) {
   if (updated.password) updated.password = await crypt.hash(updated.password)
   if (updated.posts) throw new Error('Can not update posts with this route')
   if (updated.email) throw Error("You can't change your email")
-  if (updated.photo)
-    throw Error('You can only set photo to null with this route, to update use /api/users/photo')
   this.update(updated)
   return next()
 })
