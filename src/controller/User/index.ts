@@ -195,8 +195,8 @@ export const confirmEmail = async (req: Request, res: Response) => {
       req.app.settings.jwtTokenSecret,
     )
     res.json({
-      message: 'user confirmed',
-      payload: { token, expires: moment(expires) },
+      message: 'User confirmed',
+      payload: { token, expires: moment(expires), user },
       type: 'success',
     })
   } else res.status(404).json({ message: 'Account already confirmed', type: 'error' })

@@ -250,7 +250,7 @@
                 {
                   token: Bearer fjhu98gh7uh9iu9ryhf79g8ru9hu4g79ey8uhg,
                   expires: Sun Jun 26 2022 11:36:22 GMT+0300,
-                  user: userData,
+                  user: User,
                 }
               message: user confirmed
               type: success
@@ -288,6 +288,7 @@
                 {
                   token: Bearer fjhu98gh7uh9iu9ryhf79g8ru9hu4g79ey8uhg,
                   expires: Sun Jun 26 2022 11:36:22 GMT+0300,
+                  user: User,
                 }
               message: user confirmed
               type: success
