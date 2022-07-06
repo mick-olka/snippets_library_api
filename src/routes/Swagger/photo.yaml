@@ -1,0 +1,39 @@
+/api/users/photo/:
+  put:
+    summary: Update user photo
+    tags: [photo]
+    description: Update user photo
+    parameters:
+      - name: 'format'
+        in: 'query'
+        description: 'jpg or png'
+        required: true
+        type: 'string'
+    requestBody:
+      required: true
+      content:
+        image/jpeg:
+          schema:
+            type: image/jpeg
+            format: binary
+    responses:
+      '200':
+        description: Result
+        content:
+          example:
+            type: 'success'
+            message: 'User photo updated'
+            payload:
+              {
+                name: 'mick',
+                email: 'mick@example.com',
+                photo: 'https:srenik.pp.ua/uploads/mick.jpeg',
+              }
+      '500':
+        description: Some Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []

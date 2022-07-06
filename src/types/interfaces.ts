@@ -1,5 +1,3 @@
-import { Request } from 'express'
-
 export interface UserRegistrationI {
   name: string
   email: string
@@ -25,7 +23,4 @@ export interface PostI {
   public: boolean
   upvoters: string[]
   downvoters: string[]
-}
-export interface RequestExtended extends Request {
-  user: { id: string; exp: string }
 }
