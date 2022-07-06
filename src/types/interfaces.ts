@@ -12,6 +12,7 @@ export interface UserI {
   about: string
   password: string
   posts: string[]
+  saves: string[]
 }
 
 export interface PostI {

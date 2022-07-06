@@ -15,6 +15,8 @@ usersRouter.get('/:id', authorize, catchAsync(userController.getUserDetails))
 
 usersRouter.get('/:id/posts', authorize, catchAsync(userController.getUserPosts))
 
+usersRouter.get('/:id/saves/', authorize, catchAsync(userController.getMySaves))
+
 usersRouter.patch('/update', authorize, catchAsync(userController.updateUser))
 
 usersRouter.post('/register', catchAsync(userController.register))
