@@ -11,6 +11,7 @@ import * as crypt from '@/utils/crypt'
 import { nullifyString } from '@/utils/filter'
 import { getQueryPageAndLimit } from '@/utils/object'
 import { sendMail } from '@/utils/sendMail'
+import mongoose from 'mongoose'
 
 interface PotentialUser {
   alias: string
@@ -48,8 +49,9 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const getUserDetails = async (req: RequestExtended, res: Response) => {
   const userId = req.params.id
+  const filter = mongoose.isValidObjectId(userId) ? { _id: userId } : { alias: userId }
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const user = await User.findById(userId)
+  const user = await User.findOne(filter)
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   user.totalPosts = user.posts.length
   user.totalSaves = user.saves.length
