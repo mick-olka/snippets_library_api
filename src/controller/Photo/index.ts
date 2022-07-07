@@ -16,7 +16,7 @@ export const updatePhoto = async (req: RequestExtended, res: Response) => {
   const buffer = Buffer.from(req.body)
   if (!req.body || buffer.length < 1)
     return res.status(402).json({ message: 'No file received', type: 'warning' })
-  const fileName = req.user.name + '.' + format
+  const fileName = req.user.alias + '.' + format
   const filePath = path.resolve(__dirname, '../../../uploads/', fileName)
   await sharp(buffer)
     .resize(460, 460)

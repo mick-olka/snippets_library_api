@@ -60,7 +60,7 @@ export const getPosts = async (req: RequestExtended, res: Response) => {
     limit: +limit,
     page: +page,
     select: selectArgsMinimized,
-    populate: { path: 'author', select: 'name' },
+    populate: { path: 'author', select: 'alias' },
     lean: true,
   })
   posts.docs = posts.docs.map((p: any) => {
@@ -123,13 +123,30 @@ export const feedbackPost = async (req: RequestExtended, res: Response) => {
 export const deletePost = async (req: RequestExtended, res: Response) => {
   const id = req.params.id
   if (!id) throw new Error('Post id needed')
-  if (!req.user) throw new Error('User is not verified')
   const post = await Post.findById(id)
   if (!post) return res.status(404).json({ type: 'warning', message: 'No such post' })
   // check if it's author
-  if (req.user._id !== String(post.author))
+  if (String(req.user._id) !== String(post.author))
     return res.status(403).json({ type: 'warning', message: 'You do not have permission' })
   const result = await Post.findByIdAndDelete(id)
   await User.findByIdAndUpdate(req.user._id, { $pull: { posts: result!._id } })
   res.status(200).json({ message: 'Post deleted', type: 'success', payload: result })
+}
+
+export const savePost = async (req: RequestExtended, res: Response) => {
+  const postId = req.params.postId
+  console.log(postId)
+  if (!postId) throw new Error('Post id needed')
+  const post = await Post.findById(postId)
+  if (!post) return res.status(404).json({ type: 'warning', message: 'No such post' })
+  await User.findByIdAndUpdate(req.user._id, { $push: { saves: post._id } })
+  res.status(200).json({ message: 'Post saved', type: 'success', payload: post._id })
+}
+
+export const deleteSaves = async (req: RequestExtended, res: Response) => {
+  const posts = req.body.postsIds
+  if (!posts) return res.status(404).json({ type: 'warning', message: 'No postss ids scpecified' })
+  if (!Array.isArray(posts)) throw Error('Posts ids must be an array')
+  await User.findByIdAndUpdate(req.user._id, { $pullAll: { saves: posts } })
+  res.status(200).json({ message: 'Saves deleted', type: 'success', payload: posts })
 }

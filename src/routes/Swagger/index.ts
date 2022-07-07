@@ -36,10 +36,23 @@ export const definition = {
         properties: {
           _id: { type: 'string' },
           name: { type: 'string' },
+          alias: { type: 'string' },
           email: { type: 'string' },
           about: { type: 'string' },
           password: { type: 'string' },
           photo: { type: 'string' },
+          status: { type: 'string' },
+          contacts: {
+            type: 'object',
+            items: {
+              phone: { type: 'string' },
+              linkedin: { type: 'string' },
+              telegram: { type: 'string' },
+              instagram: { type: 'string' },
+              site: { type: 'string' },
+              other: { type: 'string' },
+            },
+          },
           posts: { type: 'array', items: { type: 'string' }, description: 'posts ids' },
         },
         xml: { name: 'User' },

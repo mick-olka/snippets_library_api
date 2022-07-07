@@ -55,7 +55,7 @@
                         _id: f847js,
                         title: post,
                         subtitle: post about node,
-                        author: { _id: fuirhggi, name: mick },
+                        author: { _id: fuirhggi, alias: mick },
                         tags: [node, js],
                         upvotes: 14,
                         downvotes: 2,
@@ -93,7 +93,7 @@
                   _id: f847js,
                   title: post,
                   subtitle: post about node,
-                  author: { _id: fuirhggi, name: mick },
+                  author: { _id: fuirhggi, alias: mick },
                   tags: [node, js],
                 }
       '404':
@@ -243,6 +243,66 @@
             example:
               message: 'Post was not found'
               type: 'warning'
+      '500':
+        description: Some error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
+/api/posts/save/{postId}:
+  put:
+    description: Save post
+    tags: [post]
+    parameters:
+      - name: 'postId'
+        in: 'path'
+        description: 'Post id'
+        required: true
+        type: 'string'
+    responses:
+      '200':
+        description: Success - post was saved
+        content:
+          application/json:
+            example:
+              message: 'Post was saved'
+              type: 'success'
+      '409':
+        description: Warning occurred
+        content:
+          application/json:
+            example:
+              message: 'Post was not found'
+              type: 'warning'
+      '500':
+        description: Some error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
+/api/posts/delete_saves/:
+  put:
+    description: Delete saves
+    tags: [post]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            example:
+              postsIds: ['545353453453', '5435435435435']
+    responses:
+      '200':
+        description: Success - post was saved
+        content:
+          application/json:
+            example:
+              message: 'Some saves deleted'
+              type: 'success'
       '500':
         description: Some error
         content:

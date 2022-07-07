@@ -25,7 +25,7 @@
             message: 'User photo updated'
             payload:
               {
-                name: 'mick',
+                alias: 'mick',
                 email: 'mick@example.com',
                 photo: 'https:srenik.pp.ua/uploads/mick.jpeg',
               }

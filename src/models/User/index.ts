@@ -1,4 +1,3 @@
-import { nullifyString } from './../../utils/filter'
 import { Schema, model, PaginateModel } from 'mongoose'
 import paginate from 'mongoose-paginate-v2'
 
@@ -12,13 +11,23 @@ const preparePhotoLink = (photo: string | null) => {
 
 const userSchema = new Schema(
   {
-    name: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
+    alias: { type: String, required: true, unique: true, max: 64 },
+    name: { type: String, default: null, max: 64 },
+    email: { type: String, required: true, unique: true, max: 256 },
     password: { type: String, required: true },
     photo: { type: String, default: null, get: preparePhotoLink },
     posts: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
     saves: [{ type: Schema.Types.ObjectId, ref: 'Posts', default: [] }],
-    about: { type: String, default: 'I am Dominik de-Koku' },
+    about: { type: String, default: null, max: 2048 },
+    status: { type: String, default: null, max: 32 },
+    contacts: {
+      phone: { type: String, default: null, max: 32 },
+      linkedin: { type: String, default: null, max: 256 },
+      telegram: { type: String, default: null, max: 256 },
+      instagram: { type: String, default: null, max: 256 },
+      site: { type: String, default: null, max: 256 },
+      other: { type: String, default: null, max: 2048 },
+    },
   },
   {
     toJSON: {
@@ -35,7 +44,8 @@ const userSchema = new Schema(
 userSchema.pre('findOneAndUpdate', async function (next) {
   const updated: any = this.getUpdate()
   if (updated.password) updated.password = await crypt.hash(updated.password)
-  if (updated.posts) throw new Error('Can not update posts with this route')
+  if (updated.posts || updated.saves)
+    throw new Error('Can not update posts and saves with this route')
   if (updated.email) throw Error("You can't change your email")
   this.update(updated)
   return next()
@@ -44,8 +54,8 @@ userSchema.pre('findOneAndUpdate', async function (next) {
 userSchema.plugin(paginate)
 
 export const User = model<any, PaginateModel<any>>('Users', userSchema)
-export const selectArgsMinimized = 'name email photo'
-export const selectUserWithoutPosts = 'name email about photo'
+export const selectArgsMinimized = 'alias name email photo status'
+export const selectUserWithoutPosts = 'alias name email photo about contacts status'
 
 // User.updateMany({ saves: { $exists: false } }, { saves: [] }, (err: any, docs: any) => {
 //   if (err) console.log(err)
