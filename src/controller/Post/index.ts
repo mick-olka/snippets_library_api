@@ -60,7 +60,7 @@ export const getPosts = async (req: RequestExtended, res: Response) => {
     limit: +limit,
     page: +page,
     select: selectArgsMinimized,
-    populate: { path: 'author', select: 'name' },
+    populate: { path: 'author', select: 'alias' },
     lean: true,
   })
   posts.docs = posts.docs.map((p: any) => {

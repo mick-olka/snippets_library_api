@@ -13,7 +13,7 @@ import { getQueryPageAndLimit } from '@/utils/object'
 import { sendMail } from '@/utils/sendMail'
 
 interface PotentialUser {
-  name: string
+  alias: string
   email: string
   password: string
   hash: string
@@ -23,7 +23,7 @@ let potentialUsers: PotentialUser[] = []
 
 export const createUser = async (req: Request, res: Response) => {
   if (!req.body) throw new Error('Body is empty')
-  const userData: { name: string; email: string; hash: string } = req.body
+  const userData: { alias: string; email: string; hash: string } = req.body
   const result = await User.create(userData)
   res.status(200).json({ message: 'User created', type: 'success', payload: result })
 }
@@ -34,6 +34,7 @@ export const getUsers = async (req: Request, res: Response) => {
   const filter: any = {}
   if (reg)
     filter.$or = [
+      { alias: { $regex: reg, $options: 'i' } },
       { name: { $regex: reg, $options: 'i' } },
       { email: { $regex: reg, $options: 'i' } },
     ]
@@ -179,22 +180,22 @@ export const updateUser = async (req: RequestExtended, res: Response) => {
 }
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body
-  if (!name || !email || !password)
-    throw new Error('Invalid credentials: name & email & password needed') //  not res to log for dev mode
+  const { alias, email, password } = req.body
+  if (!alias || !email || !password)
+    throw new Error('Invalid credentials: alias & email & password needed') //  not res to log for dev mode
   const alreadyPotential = potentialUsers.find((u) => u.email == email)
   if (alreadyPotential)
     return res
       .status(202)
       .json({ message: 'Check your email or look for confirm letter', type: 'success' })
-  const existing = await User.findOne({ $or: [{ name: name }, { email: email }] })
+  const existing = await User.findOne({ $or: [{ alias: alias }, { email: email }] })
   if (existing) {
     return res
       .status(409)
       .json({ message: 'User with such name or email already exists', type: 'warning' })
   }
   const hash = randomBytes(32).toString('hex')
-  potentialUsers.push({ name, email, password, hash })
+  potentialUsers.push({ alias, email, password, hash })
   setTimeout(() => {
     potentialUsers = potentialUsers.filter((u) => u.hash !== hash)
   }, 1000 * 60 * 5) // delete after 5 min
@@ -212,7 +213,7 @@ export const login = async (req: Request, res: Response) => {
     return res
       .status(401)
       .json({ message: 'Invalid Credentials: login & password needed', type: 'warning' })
-  const user = await User.findOne({ $or: [{ name: login }, { email: login }] })
+  const user = await User.findOne({ $or: [{ alias: login }, { email: login }] })
   if (!user) {
     return res.status(404).json({ message: 'No user with such credentials', type: 'warning' })
   }

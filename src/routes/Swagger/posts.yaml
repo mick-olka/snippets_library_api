@@ -55,7 +55,7 @@
                         _id: f847js,
                         title: post,
                         subtitle: post about node,
-                        author: { _id: fuirhggi, name: mick },
+                        author: { _id: fuirhggi, alias: mick },
                         tags: [node, js],
                         upvotes: 14,
                         downvotes: 2,
@@ -93,7 +93,7 @@
                   _id: f847js,
                   title: post,
                   subtitle: post about node,
-                  author: { _id: fuirhggi, name: mick },
+                  author: { _id: fuirhggi, alias: mick },
                   tags: [node, js],
                 }
       '404':

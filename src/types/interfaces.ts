@@ -1,5 +1,5 @@
 export interface UserRegistrationI {
-  name: string
+  alias: string
   email: string
   hash: string
   password: string
@@ -8,6 +8,7 @@ export interface UserRegistrationI {
 export interface UserI {
   _id: string
   name: string
+  alias: string
   email: string
   about: string
   password: string

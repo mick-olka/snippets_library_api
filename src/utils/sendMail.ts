@@ -22,7 +22,7 @@ export const sendMail = async (hash: string, email: string) => {
   const html = fs.readFileSync(path.resolve(__dirname, '../../views', 'mail.hbs'), 'utf8')
   const template = handlebars.compile(html)
   const data = {
-    link: CONFIG.MAIL.CONFIRM_PAGE_URL + 'users/confirm/' + hash,
+    link: CONFIG.MAIL.CONFIRM_PAGE_URL + 'api/users/confirm/' + hash,
   }
   const htmlToSend = template(data)
   const mail = {

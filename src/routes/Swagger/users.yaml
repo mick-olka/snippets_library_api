@@ -55,7 +55,9 @@
                     [
                       {
                         _id: f847js,
-                        name: mick,
+                        alias: mick,
+                        name: 'Mick Koku',
+                        status: 'moron',
                         email: mick@example.com,
                         photo: 'https://srenik.pp.ua/uploads/mick.jpg',
                       },
@@ -90,10 +92,20 @@
               payload:
                 {
                   _id: f847js,
-                  name: mick,
+                  alias: mick,
                   email: mikcolka@gmail.com,
                   about: 'I am Dominik de-Koku',
                   photo: 'https://srenik.pp.ua/uploads/mick.jpg',
+                  status: 'moron',
+                  contacts:
+                    {
+                      phone: null,
+                      linkedin: null,
+                      telegram: null,
+                      instagram: null,
+                      site: null,
+                      other: 'Levanevskogo 61 come here kisama',
+                    },
                   totalPosts: 5,
                   totalSaves: 2,
                 }
@@ -250,10 +262,10 @@
         application/json:
           schema:
             example:
-              name: 'mick1'
+              alias: 'mick'
+              name: 'Mick Koku'
               password: '1234'
               about: 'I am Dominik de-Koku'
-              saves: []
     responses:
       '200':
         description: Result
@@ -261,7 +273,7 @@
           application/json:
             example:
               payload: userData
-              message: user confirmed
+              message: User updated
               type: success
       '500':
         description: Some Error
@@ -281,7 +293,7 @@
         application/json:
           schema:
             example:
-              name: 'mick'
+              alias: 'mick'
               email: 'mick@f.com'
               password: '1234'
     responses:
