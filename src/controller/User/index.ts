@@ -2,6 +2,8 @@ import { Request, Response } from 'express'
 import { sign } from 'jsonwebtoken'
 import moment from 'moment'
 
+import mongoose from 'mongoose'
+
 import { randomBytes } from 'crypto'
 
 import { selectArgsMinimized, selectUserWithoutPosts, User } from '@/models/User'
@@ -11,7 +13,6 @@ import * as crypt from '@/utils/crypt'
 import { nullifyString } from '@/utils/filter'
 import { getQueryPageAndLimit } from '@/utils/object'
 import { sendMail } from '@/utils/sendMail'
-import mongoose from 'mongoose'
 
 interface PotentialUser {
   alias: string
@@ -51,12 +52,14 @@ export const getUserDetails = async (req: RequestExtended, res: Response) => {
   const userId = req.params.id
   const filter = mongoose.isValidObjectId(userId) ? { _id: userId } : { alias: userId }
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const user = await User.findOne(filter)
+  const user = await User.findOne(filter).lean()
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   user.totalPosts = user.posts.length
   user.totalSaves = user.saves.length
   delete user.posts
   delete user.saves
+  delete user.id
+  delete user.password
   res.json({ message: 'User received', type: 'success', payload: user })
 }
 
