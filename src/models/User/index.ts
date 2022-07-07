@@ -44,7 +44,8 @@ const userSchema = new Schema(
 userSchema.pre('findOneAndUpdate', async function (next) {
   const updated: any = this.getUpdate()
   if (updated.password) updated.password = await crypt.hash(updated.password)
-  if (updated.posts) throw new Error('Can not update posts with this route')
+  if (updated.posts || updated.saves)
+    throw new Error('Can not update posts and saves with this route')
   if (updated.email) throw Error("You can't change your email")
   this.update(updated)
   return next()

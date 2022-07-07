@@ -20,8 +20,6 @@ postsRouter.patch('/update/:id', authorize, catchAsync(postController.updatePost
 
 postsRouter.delete('/delete/:id', authorize, catchAsync(postController.deletePost))
 
-// postsRouter.post('/register', catchAsync(userController.register))
+postsRouter.put('/save/:postId', authorize, catchAsync(postController.savePost))
 
-// postsRouter.post('/login', catchAsync(userController.login))
-
-// postsRouter.get('/confirm/:hash', catchAsync(userController.confirmEmail))
+postsRouter.put('/delete_saves', authorize, catchAsync(postController.deleteSaves))
