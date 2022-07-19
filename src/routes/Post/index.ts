@@ -8,11 +8,11 @@ import { authorize } from '@/middlewares/authorize'
 
 export const postsRouter = Router()
 
-postsRouter.get('/', catchAsync(postController.getPosts))
+postsRouter.get('/', authorize, catchAsync(postController.getPosts))
 
 postsRouter.get('/:id', authorize, catchAsync(postController.getPostDetails))
 
-postsRouter.get('/:id/vote', authorize, catchAsync(postController.feedbackPost))
+postsRouter.put('/:id/vote', authorize, catchAsync(postController.feedbackPost))
 
 postsRouter.post('/', authorize, catchAsync(postController.createPost))
 

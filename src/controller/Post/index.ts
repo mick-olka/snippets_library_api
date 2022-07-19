@@ -6,6 +6,14 @@ import { User } from '@/models/User'
 import { RequestExtended } from '@/types/Request'
 import { nullifyString } from '@/utils/filter'
 
+const checkMyVote = (userId: string, upvoters: string[], downvoters: string[]) => {
+  const upvoted = !!upvoters.filter((i: any) => i.equals(userId)).length
+  const downvoted = !!downvoters.filter((i: any) => i.equals(userId)).length
+  if (upvoted) return 1
+  if (downvoted) return -1
+  return 0
+}
+
 export const createPost = async (req: RequestExtended, res: Response) => {
   if (!req.body) throw new Error('Body is empty')
   if (!req.user) throw new Error('Need to login')
@@ -20,11 +28,13 @@ export const createPost = async (req: RequestExtended, res: Response) => {
 
 export const getPostDetails = async (req: RequestExtended, res: Response) => {
   const postId = req.params.id
+  const userId = req.user._id
   if (!postId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const post = await Post.findById(postId).populate({ path: 'author', select: 'name' })
+  const post = await Post.findById(postId).populate({ path: 'author', select: 'name' }).lean()
   if (!post) return res.status(404).json({ message: 'Not Found', type: 'warning' })
-  if (!post.public && String(post.author._id) !== String(req.user._id))
+  if (!post.public && String(post.author._id) !== String(userId))
     return res.status(404).json({ message: 'No Access', type: 'warning' })
+  post.vote = checkMyVote(userId, post.upvoters, post.downvoters)
   res.json({ message: 'Post received', type: 'success', payload: post })
 }
 
@@ -67,6 +77,7 @@ export const getPosts = async (req: RequestExtended, res: Response) => {
     const post = { ...p }
     post.upvotes = p.upvoters.length
     post.downvotes = p.downvoters.length
+    post.vote = checkMyVote(req.user._id, post.upvoters, post.downvoters)
     delete post.upvoters
     delete post.downvoters
     return post
