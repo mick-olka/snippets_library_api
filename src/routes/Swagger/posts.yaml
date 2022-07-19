@@ -59,6 +59,7 @@
                         tags: [node, js],
                         upvotes: 14,
                         downvotes: 2,
+                        vote: -1,
                       },
                     ],
                 }
@@ -95,6 +96,7 @@
                   subtitle: post about node,
                   author: { _id: fuirhggi, alias: mick },
                   tags: [node, js],
+                  vote: 1,
                 }
       '404':
         description: Not Found
@@ -107,7 +109,7 @@
     security:
       - bearerAuth: []
 /api/posts/{id}/vote:
-  get:
+  put:
     summary: Receives a feedback
     tags: [post]
     description: Give positive or negative vote
@@ -128,8 +130,8 @@
           application/json:
             example:
               type: 'success'
-              message: 'Post received'
-              payload: { positive: true }
+              message: 'Vote status received'
+              payload: { upvoted: true, downvoted: false }
       '404':
         description: Not Found
       '500':
