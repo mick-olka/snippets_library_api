@@ -30,7 +30,7 @@ export const getPostDetails = async (req: RequestExtended, res: Response) => {
   const postId = req.params.id
   const userId = req.user._id
   if (!postId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const post = await Post.findById(postId).populate({ path: 'author', select: 'name' }).lean()
+  const post = await Post.findById(postId).populate({ path: 'author', select: 'alias' }).lean()
   if (!post) return res.status(404).json({ message: 'Not Found', type: 'warning' })
   if (!post.public && String(post.author._id) !== String(userId))
     return res.status(404).json({ message: 'No Access', type: 'warning' })
