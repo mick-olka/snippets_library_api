@@ -30,7 +30,7 @@ export const getPostDetails = async (req: RequestExtended, res: Response) => {
   const postId = req.params.id
   const userId = req.user._id
   if (!postId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const post = await Post.findById(postId).populate({ path: 'author', select: 'alias' }).lean()
+  const post = await Post.findById(postId).populate({ path: 'author', select: 'alias photo' })
   if (!post) return res.status(404).json({ message: 'Not Found', type: 'warning' })
   if (!post.public && String(post.author._id) !== String(userId))
     return res.status(404).json({ message: 'No Access', type: 'warning' })
@@ -70,11 +70,10 @@ export const getPosts = async (req: RequestExtended, res: Response) => {
     limit: +limit,
     page: +page,
     select: selectArgsMinimized,
-    populate: { path: 'author', select: 'alias' },
-    lean: true,
+    populate: { path: 'author', select: 'alias photo' },
   })
   posts.docs = posts.docs.map((p: any) => {
-    const post = { ...p }
+    const post = { ...p._doc }
     post.upvotes = p.upvoters.length
     post.downvotes = p.downvoters.length
     post.vote = checkMyVote(req.user._id, post.upvoters, post.downvoters)
