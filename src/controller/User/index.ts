@@ -52,7 +52,7 @@ export const getUserDetails = async (req: RequestExtended, res: Response) => {
   const userId = req.params.id
   const filter = mongoose.isValidObjectId(userId) ? { _id: userId } : { alias: userId }
   if (!userId) return res.status(404).json({ message: 'No id specified', type: 'warning' })
-  const user = await User.findOne(filter).lean()
+  const user = await User.findOne(filter)
   if (!user) return res.status(404).json({ message: 'User not Found', type: 'warning' })
   user.totalPosts = user.posts.length
   user.totalSaves = user.saves.length
