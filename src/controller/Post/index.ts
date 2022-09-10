@@ -91,7 +91,7 @@ export const updatePost = async (req: RequestExtended, res: Response) => {
   if (!req.user) throw new Error('User is not verified')
   const post = await Post.findById(id)
   if (!post) return res.status(404).json({ type: 'warning', message: 'No such post' })
-  if (req.user._id !== String(post.author))
+  if (String(req.user._id) !== String(post.author))
     return res.status(402).json({ type: 'warning', message: 'You do not have permission' })
   const result = await Post.findByIdAndUpdate(id, req.body, { new: true })
   res.status(200).json({ message: 'Post updated', type: 'success', payload: result })
