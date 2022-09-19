@@ -283,6 +283,36 @@
               $ref: '#/components/schemas/ApiResponse'
     security:
       - bearerAuth: []
+/api/users/change_password/:
+  patch:
+    summary: update password if logged in
+    tags: [user]
+    description: Update password
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            example:
+              password: '1234'
+              newPassword: '12345678'
+    responses:
+      '200':
+        description: Result
+        content:
+          application/json:
+            example:
+              payload: userData
+              message: Password updated
+              type: success
+      '500':
+        description: Some Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+    security:
+      - bearerAuth: []
 /api/users/register:
   post:
     description: Register user

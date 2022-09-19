@@ -19,6 +19,8 @@ usersRouter.get('/:id/saves/', authorize, catchAsync(userController.getMySaves))
 
 usersRouter.patch('/update', authorize, catchAsync(userController.updateUser))
 
+usersRouter.patch('/change_password', authorize, catchAsync(userController.changePassword))
+
 usersRouter.post('/register', catchAsync(userController.register))
 
 usersRouter.post('/login', catchAsync(userController.login))
