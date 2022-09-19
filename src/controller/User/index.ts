@@ -242,6 +242,24 @@ export const login = async (req: Request, res: Response) => {
   })
 }
 
+export const changePassword = async (req: RequestExtended, res: Response) => {
+  if (!req.user) throw new Error('User is not verified')
+  const { password, newPassword } = req.body
+  if (!newPassword || !password)
+    return res
+      .status(401)
+      .json({ message: 'Invalid Credentials: old pass & new pass needed', type: 'warning' })
+  const success = await crypt.compare(password, req.user.password)
+  if (!success)
+    return res.status(401).json({ message: 'Credentials: invalid password', type: 'error' })
+  const result = await User.findByIdAndUpdate(
+    req.user._id,
+    { password: req.body.newPassword },
+    { new: true },
+  ).select(selectUserWithoutPosts)
+  res.status(200).json({ message: 'Password updated', type: 'success', payload: result })
+}
+
 export const confirmEmail = async (req: Request, res: Response) => {
   const hash = req.params.hash
   const potential = potentialUsers.find((u) => u.hash == hash)
