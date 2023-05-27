@@ -69,6 +69,7 @@ export const getPosts = async (req: RequestExtended, res: Response) => {
   const posts = await Post.paginate(filter, {
     limit: +limit,
     page: +page,
+    sort: { upvoters: 'desc' },
     select: selectArgsMinimized,
     populate: { path: 'author', select: 'alias photo' },
   })

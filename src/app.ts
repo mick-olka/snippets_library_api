@@ -26,7 +26,6 @@ const whitelist = [
   'http://192.168.0.103:4000',
   'https://srenik.pp.ua',
   'http://srenik.pp.ua',
-  'http://royang.pp.ua:8888',
   'http://213.217.8.92:3000',
 ]
 const options: cors.CorsOptions = {
